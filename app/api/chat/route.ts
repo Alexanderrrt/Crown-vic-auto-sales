@@ -33,20 +33,23 @@ Dealership facts:
 Keep responses concise, specific, and dealer-friendly.
 `.trim();
 
-  const response = await openai.responses.create({
-    model: "gpt-5.1",
-    input: [
-      { role: "system", content: system },
-      ...messages.slice(-10).map((message: { role?: string; content?: unknown }) => ({
-        role: message.role === "assistant" ? ("assistant" as const) : ("user" as const),
-        content: String(message.content ?? ""),
-      })),
-    ],
-  });
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-5.1",
+      input: [
+        { role: "system", content: system },
+        ...messages.slice(-10).map((message: { role?: string; content?: unknown }) => ({
+          role: message.role === "assistant" ? ("assistant" as const) : ("user" as const),
+          content: String(message.content ?? ""),
+        })),
+      ],
+    });
 
-  const message = response.output_text?.trim() || fallbackReply(lastMessage);
-
-  return NextResponse.json({ message });
+    const message = response.output_text?.trim() || fallbackReply(lastMessage);
+    return NextResponse.json({ message });
+  } catch {
+    return NextResponse.json({ message: fallbackReply(lastMessage) });
+  }
 }
 
 function fallbackReply(lastMessage: string) {

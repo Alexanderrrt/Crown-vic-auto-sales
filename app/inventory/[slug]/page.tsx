@@ -2,10 +2,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ChatPanel } from "@/components/chat-panel";
+import { inventoryVehicles } from "@/lib/dealership-data";
 import { getVehicleBySlug } from "@/lib/inventory";
 
-export default async function VehiclePage({ params }: { params: { slug: string } }) {
-  const vehicle = await getVehicleBySlug(params.slug);
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return inventoryVehicles.map((vehicle) => ({ slug: vehicle.slug }));
+}
+
+export default async function VehiclePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const vehicle = await getVehicleBySlug(slug);
   if (!vehicle) notFound();
 
   return (
