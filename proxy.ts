@@ -3,6 +3,7 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 const isProtectedRoute = createRouteMatcher(["/admin(.*)", "/api/admin(.*)"]);
 const hasClerkConfig = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY);
+const isProduction = process.env.NODE_ENV === "production";
 
 const clerkProxy = hasClerkConfig
   ? clerkMiddleware(async (auth, req) => {
@@ -13,7 +14,14 @@ const clerkProxy = hasClerkConfig
   : null;
 
 export default function proxy(req: NextRequest, event: NextFetchEvent) {
-  if (!clerkProxy) return NextResponse.next();
+  if (!clerkProxy) {
+    if (isProduction && isProtectedRoute(req)) {
+      return NextResponse.json({ error: "Clerk authentication is not configured." }, { status: 503 });
+    }
+
+    return NextResponse.next();
+  }
+
   return clerkProxy(req, event);
 }
 
