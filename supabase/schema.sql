@@ -48,7 +48,7 @@ create table if not exists public.vehicle_specs (
   vehicle_id uuid not null references public.vehicles(id) on delete cascade,
   spec_group text not null default 'features',
   label text not null,
-  value text not null,
+  spec_value text not null,
   sort_order integer not null default 0
 );
 
@@ -124,8 +124,8 @@ create table if not exists public.chat_messages (
 );
 
 create table if not exists public.dealership_settings (
-  key text primary key,
-  value jsonb not null default '{}'::jsonb,
+  setting_key text primary key,
+  setting_value jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
 );
 
