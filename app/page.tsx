@@ -4,9 +4,16 @@ import { FeaturedVehicleCard } from "@/components/featured-vehicle-card";
 import { InventoryFilters } from "@/components/inventory-filters";
 import { InventoryGrid } from "@/components/inventory-grid";
 import { ChatPanel } from "@/components/chat-panel";
-import { dealershipFacts, featuredVehicles, inventoryVehicles, siteStats, trustSignals } from "@/lib/dealership-data";
+import { dealershipFacts, siteStats, trustSignals } from "@/lib/dealership-data";
+import { getInventory } from "@/lib/inventory";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const inventoryVehicles = await getInventory();
+  const featuredVehicles = inventoryVehicles.filter((vehicle) => vehicle.isFeatured).slice(0, 2);
+  const homepageFeatured = featuredVehicles.length ? featuredVehicles : inventoryVehicles.slice(0, 2);
+
   return (
     <main className="bg-[radial-gradient(circle_at_top,_rgba(255,198,64,0.18),_transparent_34%),linear-gradient(180deg,_#081018_0%,_#0a1220_48%,_#f5f2ea_48%,_#f5f2ea_100%)] text-slate-950">
       <section className="mx-auto flex min-h-[96vh] w-full max-w-7xl flex-col gap-10 px-4 pb-14 pt-4 sm:px-6 lg:px-8">
@@ -109,7 +116,7 @@ export default function Home() {
               </Link>
             </div>
             <div className="mt-6 grid gap-5 md:grid-cols-2">
-              {featuredVehicles.map((vehicle) => (
+              {homepageFeatured.map((vehicle) => (
                 <FeaturedVehicleCard key={vehicle.id} vehicle={vehicle} />
               ))}
             </div>

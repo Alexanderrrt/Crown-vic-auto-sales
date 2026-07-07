@@ -4,14 +4,31 @@ export type Vehicle = {
   id: string;
   slug: string;
   title: string;
+  year?: number;
+  make?: string;
+  model?: string;
+  trim?: string;
+  vin?: string;
+  stockNumber?: string;
   category: string;
   summary: string;
   price: string;
+  priceNumber?: number;
   mileage: string;
+  mileageNumber?: number;
   mpg: string;
   transmission: string;
   drivetrain: string;
+  exteriorColor?: string;
+  interiorColor?: string;
+  fuelType?: string;
+  bodyStyle?: string;
+  status?: "available" | "pending" | "sold" | "draft";
+  isFeatured?: boolean;
+  views?: number;
+  leadCount?: number;
   image: string;
+  media?: string[];
   featuredLabel: string;
 };
 
@@ -65,6 +82,10 @@ export const featuredVehicles: Vehicle[] = [
     mpg: "53 city / 46 hwy",
     transmission: "Automatic",
     drivetrain: "FWD",
+    fuelType: "Hybrid",
+    bodyStyle: "Sedan",
+    status: "available",
+    isFeatured: true,
     image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1400&q=80",
     featuredLabel: "Featured",
   },
@@ -79,6 +100,10 @@ export const featuredVehicles: Vehicle[] = [
     mpg: "114 MPGe",
     transmission: "Single-speed",
     drivetrain: "RWD",
+    fuelType: "Electric",
+    bodyStyle: "SUV",
+    status: "available",
+    isFeatured: true,
     image: "https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1400&q=80",
     featuredLabel: "EV pick",
   },
@@ -177,14 +202,49 @@ export function toVehicle(row: Partial<Record<string, unknown>>): Vehicle {
     id: String(row.id ?? row.slug ?? crypto.randomUUID()),
     slug: String(row.slug ?? row.id ?? "vehicle"),
     title: String(row.title ?? "Untitled vehicle"),
+    year: toOptionalNumber(row.year),
+    make: toOptionalString(row.make),
+    model: toOptionalString(row.model),
+    trim: toOptionalString(row.trim),
+    vin: toOptionalString(row.vin),
+    stockNumber: toOptionalString(row.stock_number ?? row.stockNumber),
     category: String(row.category ?? "Inventory"),
     summary: String(row.summary ?? ""),
     price: String(row.price ?? ""),
+    priceNumber: toOptionalNumber(row.price_number ?? row.priceNumber),
     mileage: String(row.mileage ?? ""),
+    mileageNumber: toOptionalNumber(row.mileage_number ?? row.mileageNumber),
     mpg: String(row.mpg ?? ""),
     transmission: String(row.transmission ?? ""),
     drivetrain: String(row.drivetrain ?? ""),
+    exteriorColor: toOptionalString(row.exterior_color ?? row.exteriorColor),
+    interiorColor: toOptionalString(row.interior_color ?? row.interiorColor),
+    fuelType: toOptionalString(row.fuel_type ?? row.fuelType),
+    bodyStyle: toOptionalString(row.body_style ?? row.bodyStyle),
+    status: toVehicleStatus(row.status),
+    isFeatured: Boolean(row.is_featured ?? row.isFeatured ?? false),
+    views: toOptionalNumber(row.views),
+    leadCount: toOptionalNumber(row.lead_count ?? row.leadCount),
     image: String(row.image ?? ""),
+    media: Array.isArray(row.media) ? row.media.map(String) : undefined,
     featuredLabel: String(row.featured_label ?? row.featuredLabel ?? "Featured"),
   };
+}
+
+function toOptionalString(value: unknown) {
+  return typeof value === "string" && value.trim() ? value : undefined;
+}
+
+function toOptionalNumber(value: unknown) {
+  if (typeof value === "number") return value;
+  if (typeof value === "string" && value.trim()) {
+    const parsed = Number(value.replace(/[^0-9.]/g, ""));
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+  return undefined;
+}
+
+function toVehicleStatus(value: unknown): Vehicle["status"] {
+  if (value === "pending" || value === "sold" || value === "draft") return value;
+  return "available";
 }

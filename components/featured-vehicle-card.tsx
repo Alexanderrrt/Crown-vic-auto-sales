@@ -7,7 +7,7 @@ export function FeaturedVehicleCard({ vehicle }: { vehicle: Vehicle }) {
   return (
     <Link href={`/inventory/${vehicle.slug}`} className="group overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-xl">
       <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
-        <Image src={vehicle.image} alt={vehicle.title} fill className="object-cover transition duration-500 group-hover:scale-105" />
+        <Image src={vehicle.image} alt={vehicle.title} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition duration-500 group-hover:scale-105" />
         <div className="absolute left-4 top-4 rounded-full bg-slate-950 px-3 py-1 text-xs font-semibold text-white">{vehicle.featuredLabel}</div>
       </div>
       <div className="space-y-4 p-5">

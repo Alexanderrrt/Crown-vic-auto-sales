@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Crown Vic Auto Sales Dealer Platform
 
-## Getting Started
+Next.js dealership platform for Crown Vic Auto Sales with a public inventory site, AI chat, Supabase data, and Clerk-protected staff workspace.
 
-First, run the development server:
+## Stack
+
+- Next.js App Router
+- Clerk authentication for staff/admin routes
+- Supabase for inventory, leads, appointments, chat history, analytics, and media storage
+- OpenAI Responses API for the dealership assistant
+- Vercel for deployment
+
+## Environment
+
+Create `.env.local` locally and add the same values to Vercel:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+OPENAI_API_KEY=
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/admin
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/admin
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Keep `SUPABASE_SERVICE_ROLE_KEY` and `CLERK_SECRET_KEY` server-only.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Supabase Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run `supabase/schema.sql` in the Supabase SQL editor. It creates:
 
-## Learn More
+- vehicles, vehicle media, and vehicle specs
+- leads, lead events, and appointments
+- chat sessions and messages
+- staff profiles linked to Clerk user IDs
+- dealership settings and analytics events
+- storage buckets for vehicle media, site media, and documents
 
-To learn more about Next.js, take a look at the following resources:
+## Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm install
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open `http://localhost:3000`.
 
-## Deploy on Vercel
+## Verification
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run lint
+npm run build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Key Routes
+
+- `/` public showroom
+- `/inventory` searchable inventory
+- `/inventory/[slug]` vehicle detail page with lead CTAs
+- `/contact` lead form
+- `/admin` Clerk-protected dashboard
+- `/admin/inventory` inventory manager
+- `/admin/leads` CRM pipeline
+- `/admin/chat` AI chat inbox
+- `/admin/analytics` conversion analytics

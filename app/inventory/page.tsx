@@ -1,5 +1,7 @@
-import { InventoryGrid } from "@/components/inventory-grid";
+import { InventoryExplorer } from "@/components/inventory-explorer";
 import { getInventory } from "@/lib/inventory";
+
+export const dynamic = "force-dynamic";
 
 export default async function InventoryPage() {
   const inventoryVehicles = await getInventory();
@@ -9,9 +11,9 @@ export default async function InventoryPage() {
         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Inventory</p>
         <h1 className="mt-2 text-4xl font-black">Browse the current lot</h1>
         <p className="mt-3 max-w-3xl text-lg text-slate-600">
-          This is the new searchable inventory experience. In production, the cards will populate from Supabase and can be filtered by price, body style, mileage, and more.
+          Search by budget, fuel type, body style, and mileage. Every inquiry can flow straight into the dealership CRM.
         </p>
-        <InventoryGrid vehicles={inventoryVehicles} />
+        <InventoryExplorer vehicles={inventoryVehicles} />
       </div>
     </main>
   );

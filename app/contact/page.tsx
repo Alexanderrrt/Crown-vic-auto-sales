@@ -1,42 +1,49 @@
+import Link from "next/link";
+import { ArrowLeft, MapPin, Phone, ShieldCheck } from "lucide-react";
+import { LeadForm } from "@/components/lead-form";
+import { dealershipFacts } from "@/lib/dealership-data";
+
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-12 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-        <section className="rounded-[2rem] border border-white/10 bg-white/5 p-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300">Contact</p>
-          <h1 className="mt-2 text-4xl font-black">Talk to the dealership</h1>
-          <p className="mt-4 text-slate-300">
-            This page is wired for lead capture and can be connected to Supabase so every inquiry lands in a shared inbox.
-          </p>
-          <div className="mt-8 space-y-3 text-sm text-slate-200">
-            <p>Crown Vic Auto Sales</p>
-            <p>3732 Stevens Creek Blvd</p>
-            <p>San Jose, CA 95117</p>
-            <p>(408) 684-5036</p>
-          </div>
-        </section>
-        <section className="rounded-[2rem] bg-white p-8 text-slate-950">
-          <h2 className="text-2xl font-black">Lead form</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <Field label="First name" />
-            <Field label="Last name" />
-            <Field label="Email" />
-            <Field label="Phone" />
-            <Field label="Vehicle interest" className="sm:col-span-2" />
-            <Field label="Message" className="sm:col-span-2" />
-          </div>
-          <button className="mt-6 rounded-full bg-amber-300 px-6 py-3 font-semibold text-slate-950">Send inquiry</button>
-        </section>
+    <main className="min-h-screen bg-neutral-950 px-4 py-8 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-6xl">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-neutral-300 transition hover:text-white">
+          <ArrowLeft className="h-4 w-4" />
+          Back to showroom
+        </Link>
+
+        <div className="mt-8 grid gap-6 lg:grid-cols-[0.82fr_1.18fr]">
+          <section className="space-y-6">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300">Crown Vic Auto Sales</p>
+              <h1 className="mt-3 text-4xl font-black sm:text-5xl">Talk with a real sales team.</h1>
+              <p className="mt-4 text-lg leading-8 text-neutral-300">
+                Ask about availability, financing, trade-ins, appointments, or the best hybrid and EV options for your budget.
+              </p>
+            </div>
+
+            <div className="grid gap-3">
+              <Info icon={<MapPin className="h-5 w-5" />} label="Visit" value={`${dealershipFacts.addressLine}, ${dealershipFacts.city}`} />
+              <Info icon={<Phone className="h-5 w-5" />} label="Call" value={dealershipFacts.phone} />
+              <Info icon={<ShieldCheck className="h-5 w-5" />} label="Hours" value={dealershipFacts.hours} />
+            </div>
+          </section>
+
+          <LeadForm source="contact" title="Send a message to sales" />
+        </div>
       </div>
     </main>
   );
 }
 
-function Field({ label, className = "" }: { label: string; className?: string }) {
+function Info({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <label className={className}>
-      <span className="mb-2 block text-sm font-medium text-slate-600">{label}</span>
-      <input className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none" />
-    </label>
+    <div className="flex gap-3 rounded-lg border border-white/10 bg-white/5 p-4">
+      <div className="text-amber-300">{icon}</div>
+      <div>
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-400">{label}</p>
+        <p className="mt-1 font-semibold">{value}</p>
+      </div>
+    </div>
   );
 }
