@@ -74,6 +74,19 @@ export type ActivityItem = {
   relatedVehicleSlug?: string;
 };
 
+export type AnalyticsSummary = {
+  vehicleViews: number;
+  leadConversionRate: string;
+  chatConversionRate: string;
+  popularVehicle: string;
+  appointmentRequests: number;
+  handoffRequests: number;
+  topLeadSource: string;
+  sourceBreakdown: Array<{ source: string; count: number }>;
+  demandVehicles: Array<{ slug: string; title: string; views: number; leads: number; chats: number }>;
+  chatIntentBreakdown: Array<{ intent: string; count: number }>;
+};
+
 export async function getAdminOverview() {
   const client = getSupabaseAdmin();
   const inventory = await getInventory();
@@ -96,6 +109,23 @@ export async function getAdminOverview() {
         appointmentRequests: 16,
         handoffRequests: 11,
         topLeadSource: "ai-chat",
+        sourceBreakdown: [
+          { source: "ai-chat", count: 14 },
+          { source: "contact", count: 9 },
+          { source: "test-drive", count: 6 },
+        ],
+        demandVehicles: inventory.slice(0, 3).map((vehicle, index) => ({
+          slug: vehicle.slug,
+          title: vehicle.title,
+          views: 320 - index * 44,
+          leads: 18 - index * 3,
+          chats: 11 - index * 2,
+        })),
+        chatIntentBreakdown: [
+          { intent: "budget_shopper", count: 8 },
+          { intent: "financing", count: 6 },
+          { intent: "test_drive", count: 5 },
+        ],
       },
     };
   }
@@ -114,7 +144,7 @@ export async function getAdminOverview() {
       })
       .order("created_at", { ascending: false })
       .limit(20),
-    client.from("analytics_events").select("event_type, vehicle_slug").limit(500),
+    client.from("analytics_events").select("event_type, vehicle_slug, metadata").limit(500),
     client.from("staff_profiles").select("clerk_user_id, name, role").order("name", { ascending: true }).limit(20),
   ]);
 
@@ -311,11 +341,49 @@ function toStaffProfile(row: Record<string, unknown>): StaffProfile {
   };
 }
 
-function summarizeAnalytics(events: Record<string, unknown>[], inventory: Vehicle[]) {
+function summarizeAnalytics(events: Record<string, unknown>[], inventory: Vehicle[]): AnalyticsSummary {
   const views = events.filter((event) => event.event_type === "vehicle_view");
   const leads = events.filter((event) => event.event_type === "lead_created");
   const chats = events.filter((event) => event.event_type === "chat_qualified");
   const popularSlug = mostFrequent(views.map((event) => String(event.vehicle_slug ?? "")));
+  const sourceBreakdown = sortCounts(
+    leads
+      .map((event) => {
+        const metadata = event.metadata as Record<string, unknown> | undefined;
+        return typeof metadata?.source === "string" ? metadata.source : "";
+      })
+      .filter(Boolean),
+  ).map(([source, count]) => ({ source, count }));
+  const chatIntentBreakdown = sortCounts(
+    events
+      .filter((event) => event.event_type === "chat_message")
+      .map((event) => {
+        const metadata = event.metadata as Record<string, unknown> | undefined;
+        return typeof metadata?.buyerIntent === "string" ? metadata.buyerIntent : "";
+      })
+      .filter(Boolean),
+  ).map(([intent, count]) => ({ intent, count }));
+  const demandMap = new Map<string, { views: number; leads: number; chats: number }>();
+
+  for (const event of events) {
+    const slug = typeof event.vehicle_slug === "string" ? event.vehicle_slug : "";
+    if (!slug) continue;
+    const current = demandMap.get(slug) ?? { views: 0, leads: 0, chats: 0 };
+    if (event.event_type === "vehicle_view") current.views += 1;
+    if (event.event_type === "lead_created" || event.event_type === "appointment_requested") current.leads += 1;
+    if (event.event_type === "chat_message" || event.event_type === "chat_qualified") current.chats += 1;
+    demandMap.set(slug, current);
+  }
+  const demandVehicles = [...demandMap.entries()]
+    .map(([slug, metrics]) => ({
+      slug,
+      title: inventory.find((vehicle) => vehicle.slug === slug)?.title ?? slug,
+      views: metrics.views,
+      leads: metrics.leads,
+      chats: metrics.chats,
+    }))
+    .sort((a, b) => b.views + b.leads * 3 + b.chats * 2 - (a.views + a.leads * 3 + a.chats * 2))
+    .slice(0, 5);
 
   return {
     vehicleViews: views.length,
@@ -324,14 +392,10 @@ function summarizeAnalytics(events: Record<string, unknown>[], inventory: Vehicl
     popularVehicle: inventory.find((vehicle) => vehicle.slug === popularSlug)?.title ?? inventory[0]?.title ?? "Featured inventory",
     appointmentRequests: events.filter((event) => event.event_type === "appointment_requested").length,
     handoffRequests: events.filter((event) => event.event_type === "chat_handoff_requested").length,
-    topLeadSource: mostFrequent(
-      leads
-        .map((event) => {
-          const metadata = event.metadata as Record<string, unknown> | undefined;
-          return typeof metadata?.source === "string" ? metadata.source : "";
-        })
-        .filter(Boolean),
-    ) || "site",
+    topLeadSource: sourceBreakdown[0]?.source ?? "site",
+    sourceBreakdown,
+    demandVehicles,
+    chatIntentBreakdown,
   };
 }
 
@@ -342,6 +406,14 @@ function mostFrequent(values: string[]) {
     counts.set(value, (counts.get(value) ?? 0) + 1);
   }
   return [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
+}
+
+function sortCounts(values: string[]) {
+  const counts = new Map<string, number>();
+  for (const value of values) {
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1]);
 }
 
 function countOpenTasks(leads: Lead[]) {

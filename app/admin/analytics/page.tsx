@@ -34,6 +34,52 @@ export default async function AdminAnalyticsPage() {
           <Panel title="Chat outcomes" body="Measure AI-qualified shoppers, human handoff, and appointment conversion." />
         </div>
       </section>
+
+      <section className="grid gap-6 xl:grid-cols-2">
+        <div className="rounded-lg border border-white/70 bg-[linear-gradient(180deg,#ffffff,#f7f9fb)] p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+          <h2 className="text-2xl font-black">Lead source mix</h2>
+          <div className="mt-5 space-y-3">
+            {analytics.sourceBreakdown.length ? (
+              analytics.sourceBreakdown.map((item) => (
+                <DataRow key={item.source} label={item.source} value={`${item.count} lead${item.count === 1 ? "" : "s"}`} />
+              ))
+            ) : (
+              <EmptyState text="Lead source data will appear here as form and chat submissions accumulate." />
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-white/70 bg-[linear-gradient(180deg,#ffffff,#f7f9fb)] p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+          <h2 className="text-2xl font-black">Chat intent mix</h2>
+          <div className="mt-5 space-y-3">
+            {analytics.chatIntentBreakdown.length ? (
+              analytics.chatIntentBreakdown.map((item) => (
+                <DataRow key={item.intent} label={item.intent.replaceAll("_", " ")} value={`${item.count} message${item.count === 1 ? "" : "s"}`} />
+              ))
+            ) : (
+              <EmptyState text="Buyer intent categories will show here once chat activity accumulates." />
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-lg border border-white/70 bg-[linear-gradient(180deg,#ffffff,#f7f9fb)] p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+        <h2 className="text-2xl font-black">Top demand vehicles</h2>
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {analytics.demandVehicles.length ? (
+            analytics.demandVehicles.map((vehicle) => (
+              <div key={vehicle.slug} className="rounded-lg border border-slate-200 bg-[linear-gradient(180deg,#ffffff,#f4f6f8)] p-4">
+                <p className="font-black">{vehicle.title}</p>
+                <p className="mt-3 text-sm text-neutral-600">Views: {vehicle.views}</p>
+                <p className="mt-1 text-sm text-neutral-600">Leads: {vehicle.leads}</p>
+                <p className="mt-1 text-sm text-neutral-600">Chats: {vehicle.chats}</p>
+              </div>
+            ))
+          ) : (
+            <EmptyState text="Vehicle demand data will appear here once analytics events are collected." />
+          )}
+        </div>
+      </section>
     </div>
   );
 }
@@ -55,4 +101,17 @@ function Panel({ title, body }: { title: string; body: string }) {
       <p className="mt-2 text-sm leading-6 text-neutral-600">{body}</p>
     </div>
   );
+}
+
+function DataRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-[linear-gradient(180deg,#ffffff,#f4f6f8)] px-4 py-3">
+      <p className="font-bold capitalize text-slate-900">{label}</p>
+      <p className="text-sm font-semibold text-slate-600">{value}</p>
+    </div>
+  );
+}
+
+function EmptyState({ text }: { text: string }) {
+  return <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-500">{text}</p>;
 }

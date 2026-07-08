@@ -40,7 +40,9 @@ export function SavedVehiclesPanel({ vehicles }: { vehicles: Vehicle[] }) {
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Compare queue</p>
           <h2 className="mt-2 text-2xl font-black text-slate-950">Vehicles to compare</h2>
           <div className="mt-4 flex flex-wrap gap-2">
-            {compared.length ? compared.map((vehicle) => <Pill key={vehicle.id} href={`/inventory/${vehicle.slug}`} label={`${vehicle.title} · ${vehicle.price}`} />) : <Empty text="Add up to four vehicles to compare." />}
+            {compared.length
+              ? compared.map((vehicle) => <Pill key={vehicle.id} href={`/inventory/${vehicle.slug}`} label={`${vehicle.title} - ${vehicle.price}`} />)
+              : <Empty text="Add up to four vehicles to compare." />}
           </div>
         </div>
       </div>

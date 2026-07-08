@@ -52,6 +52,15 @@ export function extractShopperName(message: string) {
   return undefined;
 }
 
+export function extractVehiclePreferences(message: string) {
+  const lower = message.toLowerCase();
+  return {
+    bodyStyle: detectBodyStyle(lower),
+    fuelType: detectFuelType(lower),
+    useCase: detectUseCase(lower),
+  };
+}
+
 export function isHumanHandoffIntent(message: string) {
   const lower = message.toLowerCase();
   return hasAny(lower, [
@@ -119,4 +128,25 @@ function parseCurrency(value: string) {
 
 function hasAny(value: string, matches: string[]) {
   return matches.some((match) => value.includes(match));
+}
+
+function detectBodyStyle(value: string) {
+  if (value.includes("suv") || value.includes("crossover")) return "SUV";
+  if (value.includes("sedan")) return "Sedan";
+  if (value.includes("hatch") || value.includes("hatchback")) return "Hatchback";
+  if (value.includes("truck")) return "Truck";
+  return undefined;
+}
+
+function detectFuelType(value: string) {
+  if (value.includes("hybrid")) return "Hybrid";
+  if (value.includes("ev") || value.includes("electric")) return "Electric";
+  return undefined;
+}
+
+function detectUseCase(value: string) {
+  if (hasAny(value, ["rideshare", "uber", "lyft"])) return "Rideshare";
+  if (hasAny(value, ["commute", "commuting"])) return "Commuter";
+  if (hasAny(value, ["family", "kids"])) return "Family";
+  return undefined;
 }

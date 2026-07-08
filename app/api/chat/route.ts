@@ -5,6 +5,7 @@ import {
   detectBuyerIntent,
   extractContactDetails,
   extractShopperName,
+  extractVehiclePreferences,
   isHumanHandoffIntent,
   rankInventory,
 } from "@/lib/chat-assistant";
@@ -43,6 +44,7 @@ export async function POST(req: Request) {
   const detectedIntent = detectBuyerIntent(lastMessage, vehicleSlug);
   const contact = extractContactDetails(lastMessage);
   const shopperName = extractShopperName(lastMessage);
+  const preferences = extractVehiclePreferences(lastMessage);
 
   const sessionId = await ensureChatSession({
     sessionId: typeof body?.sessionId === "string" ? body.sessionId : undefined,
@@ -80,6 +82,7 @@ export async function POST(req: Request) {
       buyerIntent: detectedIntent,
       contact,
       shopperName,
+      preferences,
     });
   }
 
@@ -111,14 +114,25 @@ export async function POST(req: Request) {
 
 async function createAiReply(messages: Array<{ role?: string; content?: unknown }>, lastMessage: string, rankedVehicles: Awaited<ReturnType<typeof rankInventory>>, detectedIntent: string) {
   const system = `
-You are the AI sales assistant for ${dealershipFacts.name}, a San Jose dealership specializing in hybrid and EV vehicles.
-Help shoppers compare inventory, estimate trade-in next steps, request test drives, and route qualified buyers to staff.
+You are the online sales assistant for ${dealershipFacts.name}, a San Jose dealership specializing in hybrid and EV vehicles.
+You should feel very human: warm, grounded, conversational, and easy to talk to.
+Your job is to help shoppers compare inventory, talk through trade-in or financing next steps, answer dealership questions, and smoothly hand serious buyers to the team.
 
 Guardrails:
 - Do not promise financing approval, final payment terms, warranties, or unavailable inventory.
 - If a buyer is ready to buy, asks for financing, gives contact details, or needs exact terms, ask for name and phone and recommend staff follow-up.
 - Never invent a vehicle, availability status, payment approval, or warranty coverage.
-- Keep answers concise, specific, and dealership-friendly.
+- Keep answers natural and conversational, not scripted or corporate.
+- Usually answer in 2 to 4 sentences.
+- Ask at most one helpful follow-up question when it would move the conversation forward.
+- Use plain language and sound like a good dealership salesperson texting with a customer.
+- When you mention vehicles, make the recommendation feel personal and specific rather than dumping a list.
+- Avoid bullet lists unless the shopper explicitly asks for a list or comparison.
+- Never say things like "I'd be happy to help", "I can certainly help with that", "as an AI", "great question", "absolutely!", "feel free", or "let me know" unless it sounds truly natural in context.
+- Do not sound like customer support or a chatbot. Sound like a real human salesperson texting quickly but thoughtfully.
+- Mirror the shopper's tone a little. If they are casual, be casual. If they are direct, be direct.
+- Prefer specific observations over filler. If you mention a vehicle, say why it fits.
+- Do not over-explain. No motivational fluff. No generic closing line in every reply.
 
 Detected buyer intent:
 - ${detectedIntent}
@@ -144,9 +158,9 @@ Dealership:
       ],
     });
 
-    return response.output_text?.trim() || fallbackReply(lastMessage, rankedVehicles, detectedIntent);
+    return humanizeReply(response.output_text?.trim() || fallbackReply(lastMessage, rankedVehicles, detectedIntent));
   } catch {
-    return fallbackReply(lastMessage, rankedVehicles, detectedIntent);
+    return humanizeReply(fallbackReply(lastMessage, rankedVehicles, detectedIntent));
   }
 }
 
@@ -205,6 +219,7 @@ async function createLeadFromChatSession({
   buyerIntent,
   contact,
   shopperName,
+  preferences,
 }: {
   sessionId: string;
   visitorId: string;
@@ -213,6 +228,7 @@ async function createLeadFromChatSession({
   buyerIntent: string;
   contact: { email?: string; phone?: string };
   shopperName?: string;
+  preferences: { bodyStyle?: string; fuelType?: string; useCase?: string };
 }) {
   const client = getSupabaseAdmin();
   if (!client || sessionId === "local-session") return undefined;
@@ -243,7 +259,7 @@ async function createLeadFromChatSession({
       lead_id: lead.id,
       event_type: "lead_created_from_chat",
       note: `Lead created from AI chat for visitor ${visitorId}`,
-      metadata: { sessionId, vehicleSlug: vehicleSlug ?? null, buyerIntent, shopperName: shopperName ?? null },
+      metadata: { sessionId, vehicleSlug: vehicleSlug ?? null, buyerIntent, shopperName: shopperName ?? null, preferences },
     }),
   ]);
 
@@ -288,16 +304,31 @@ function buildSessionSummary(lastMessage: string, detectedIntent: string, ranked
 
 function fallbackReply(lastMessage: string, rankedVehicles: Awaited<ReturnType<typeof rankInventory>>, detectedIntent: string) {
   const lower = lastMessage.toLowerCase();
-  if (lower.includes("hours")) return `We're open ${dealershipFacts.hours}.`;
-  if (lower.includes("trade")) return "Share your year, make, model, mileage, and condition and I can help route a trade-in request to the team.";
+  if (lower.includes("hours")) return `We're open ${dealershipFacts.hours}. If you want, I can also help you narrow the inventory before you stop by.`;
+  if (lower.includes("trade")) return "Absolutely. If you send your trade's year, make, model, mileage, and overall condition, I can help point you in the right direction and get the team involved.";
   if (lower.includes("budget") || lower.includes("under")) {
     const suggestions = rankedVehicles.slice(0, 3).map((vehicle) => vehicle.title).join(", ");
     return suggestions
-      ? `Based on that budget, a few strong matches are ${suggestions}. If you want, I can narrow that by hybrid, EV, sedan, or SUV.`
-      : "Tell me your budget, body style, and whether you prefer hybrid or EV, and I can narrow the inventory.";
+      ? `A few strong matches in that range would be ${suggestions}. If you want, I can narrow that down even more based on whether you'd rather stay with a hybrid, go full EV, or stick to something like a sedan or SUV.`
+      : "Tell me your budget and what kind of vehicle you want, and I can help narrow it down for you.";
   }
   if (detectedIntent === "financing") {
-    return "I can help you take the next financing step, but I can’t promise approval or final payment terms here. Share your name and phone number and the team can follow up with exact options.";
+    return "I can help you get pointed in the right direction on financing, but I can't promise approval or exact payment terms here in chat. If you want, send your name and phone number and the team can follow up with real options.";
   }
-  return `I can help with inventory, financing interest, trade-ins, and dealership info. Crown Vic Auto Sales is at ${dealershipFacts.addressLine}, ${dealershipFacts.city}.`;
+  return `I can help with inventory, trade-ins, financing questions, and dealership info. Crown Vic Auto Sales is at ${dealershipFacts.addressLine}, ${dealershipFacts.city}. What are you shopping for right now?`;
+}
+
+function humanizeReply(reply: string) {
+  const cleaned = reply
+    .replace(/\b(?:I'd be happy to help(?: with that)?\.?\s*)/gi, "")
+    .replace(/\b(?:I can certainly help(?: with that)?\.?\s*)/gi, "")
+    .replace(/\b(?:As an AI|As a virtual assistant)[^.!?]*[.!?]\s*/gi, "")
+    .replace(/\b(?:Great question[.!?]?\s*)/gi, "")
+    .replace(/\b(?:Feel free to)[^.!?]*[.!?]\s*/gi, "")
+    .replace(/\b(?:Let me know if you have any other questions[.!?]?\s*)/gi, "")
+    .replace(/\b(?:Absolutely[.!]?\s*)/gi, "Yeah, ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  return cleaned || "Tell me what you're trying to find and I'll narrow it down.";
 }

@@ -10,7 +10,7 @@ export function ChatPanel({ vehicleSlug }: { vehicleSlug?: string }) {
     {
       role: "assistant",
       content:
-        "Hi, I'm Crown Vic's AI assistant. I can help you find vehicles, compare options, estimate trade-ins, and route a lead to sales.",
+        "Hi, welcome to Crown Vic. I can help you narrow down the inventory, talk through trade-in or financing questions, or help you figure out which vehicle fits you best.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -68,14 +68,14 @@ export function ChatPanel({ vehicleSlug }: { vehicleSlug?: string }) {
     <section className="rounded-[30px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,242,233,0.94))] p-6 shadow-[0_30px_80px_rgba(148,163,184,0.18)]">
       <div className="flex items-center gap-2 text-amber-700">
         <Sparkles className="h-4 w-4" />
-        <p className="text-sm font-semibold uppercase tracking-[0.18em]">AI assistant</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.18em]">Sales chat</p>
       </div>
       <h2 className="mt-2 text-2xl font-black text-slate-950">Chat with a sales expert</h2>
       <p className="mt-2 text-sm leading-6 text-slate-600">
-        Ask about budget, mpg, trade-ins, financing interest, or which vehicles best match your commute.
+        Ask naturally, the way you would text a salesperson. I can help with budget, mpg, trade-ins, financing questions, or the best fit for your commute.
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
-        {["Hybrids under $15k", "Best mpg options", "Help with trade-in", "Set a test drive"].map((prompt) => (
+        {["I need a hybrid under $15k", "What's best on mpg?", "Can you help with a trade-in?", "I want to set up a test drive"].map((prompt) => (
           <button
             key={prompt}
             type="button"
