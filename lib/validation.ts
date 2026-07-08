@@ -9,6 +9,7 @@ export const leadSchema = z.object({
   vehicleSlug: z.string().max(160).optional(),
   budget: z.string().max(80).optional(),
   tradeVehicle: z.string().max(160).optional(),
+  website: z.string().max(120).optional(),
 });
 
 export const appointmentSchema = leadSchema.extend({

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { getSupabaseServerAnon } from "@/lib/supabase";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const analyticsSchema = z.object({
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: parsed.error.flatten().fieldErrors }, { status: 400 });
   }
 
-  const client = getSupabaseAdmin();
+  const client = getSupabaseAdmin() ?? getSupabaseServerAnon();
   if (!client) return NextResponse.json({ ok: true });
 
   const payload = parsed.data;

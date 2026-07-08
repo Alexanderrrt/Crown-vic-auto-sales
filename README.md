@@ -7,7 +7,7 @@ Next.js dealership platform for Crown Vic Auto Sales with a public inventory sit
 - Next.js App Router
 - Clerk authentication for staff/admin routes
 - Supabase for inventory, leads, appointments, chat history, analytics, and media storage
-- OpenAI Responses API for the dealership assistant
+- Groq OpenAI-compatible API for the dealership assistant
 - Vercel for deployment
 
 ## Environment
@@ -18,7 +18,8 @@ Create `.env.local` locally and add the same values to Vercel:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-OPENAI_API_KEY=
+GROQ_API_KEY=
+GROQ_MODEL=llama-3.3-70b-versatile
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in

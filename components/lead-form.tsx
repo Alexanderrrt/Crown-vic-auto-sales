@@ -29,6 +29,7 @@ export function LeadForm({ source, vehicleSlug, title = "Send an inquiry", compa
       budget: String(formData.get("budget") ?? ""),
       tradeVehicle: String(formData.get("tradeVehicle") ?? ""),
       appointmentAt: String(formData.get("appointmentAt") ?? ""),
+      website: String(formData.get("website") ?? ""),
       message: String(formData.get("message") ?? ""),
     };
 
@@ -46,6 +47,12 @@ export function LeadForm({ source, vehicleSlug, title = "Send an inquiry", compa
       return;
     }
 
+    await trackLeadEvent({
+      eventType: source === "test-drive" ? "appointment_request_submitted" : "lead_form_submitted",
+      vehicleSlug,
+      leadId: typeof result.leadId === "string" ? result.leadId : undefined,
+      metadata: { source, compact },
+    });
     setState("success");
   }
 
@@ -67,6 +74,7 @@ export function LeadForm({ source, vehicleSlug, title = "Send an inquiry", compa
         <Field name="budget" label="Budget" />
         {source === "trade-in" && <Field name="tradeVehicle" label="Trade vehicle" className={compact ? "" : "sm:col-span-2"} />}
         {source === "test-drive" && <Field name="appointmentAt" label="Preferred time" className={compact ? "" : "sm:col-span-2"} />}
+        <input tabIndex={-1} autoComplete="off" name="website" className="hidden" aria-hidden="true" />
         <label className={compact ? "" : "sm:col-span-2"}>
           <span className="mb-1.5 block text-sm font-semibold text-slate-700">Message</span>
           <textarea
@@ -95,6 +103,33 @@ export function LeadForm({ source, vehicleSlug, title = "Send an inquiry", compa
       {state === "error" && <p className="mt-3 text-sm font-medium text-red-600">{error}</p>}
     </form>
   );
+}
+
+async function trackLeadEvent({
+  eventType,
+  vehicleSlug,
+  leadId,
+  metadata,
+}: {
+  eventType: string;
+  vehicleSlug?: string;
+  leadId?: string;
+  metadata?: Record<string, unknown>;
+}) {
+  try {
+    await fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventType,
+        vehicleSlug,
+        leadId,
+        metadata: metadata ?? {},
+      }),
+    });
+  } catch {
+    // Ignore analytics delivery issues so lead capture never blocks.
+  }
 }
 
 function Field({

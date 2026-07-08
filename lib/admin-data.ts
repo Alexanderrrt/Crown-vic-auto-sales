@@ -93,6 +93,9 @@ export async function getAdminOverview() {
         leadConversionRate: "8.4%",
         chatConversionRate: "21%",
         popularVehicle: inventory[0]?.title ?? "Featured inventory",
+        appointmentRequests: 16,
+        handoffRequests: 11,
+        topLeadSource: "ai-chat",
       },
     };
   }
@@ -319,6 +322,16 @@ function summarizeAnalytics(events: Record<string, unknown>[], inventory: Vehicl
     leadConversionRate: views.length ? `${Math.round((leads.length / views.length) * 1000) / 10}%` : "0%",
     chatConversionRate: views.length ? `${Math.round((chats.length / views.length) * 1000) / 10}%` : "0%",
     popularVehicle: inventory.find((vehicle) => vehicle.slug === popularSlug)?.title ?? inventory[0]?.title ?? "Featured inventory",
+    appointmentRequests: events.filter((event) => event.event_type === "appointment_requested").length,
+    handoffRequests: events.filter((event) => event.event_type === "chat_handoff_requested").length,
+    topLeadSource: mostFrequent(
+      leads
+        .map((event) => {
+          const metadata = event.metadata as Record<string, unknown> | undefined;
+          return typeof metadata?.source === "string" ? metadata.source : "";
+        })
+        .filter(Boolean),
+    ) || "site",
   };
 }
 

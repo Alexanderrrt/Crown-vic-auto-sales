@@ -1,4 +1,4 @@
-import { BarChart3, MousePointerClick, Percent, Star } from "lucide-react";
+import { BarChart3, CalendarClock, MousePointerClick, Percent, PhoneCall, Star } from "lucide-react";
 import { getAdminOverview } from "@/lib/admin-data";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +18,12 @@ export default async function AdminAnalyticsPage() {
         <Metric icon={<Percent className="h-5 w-5" />} label="Lead conversion" value={analytics.leadConversionRate} />
         <Metric icon={<BarChart3 className="h-5 w-5" />} label="Chat conversion" value={analytics.chatConversionRate} />
         <Metric icon={<Star className="h-5 w-5" />} label="Top vehicle" value={analytics.popularVehicle} />
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-3">
+        <Metric icon={<CalendarClock className="h-5 w-5" />} label="Appointment requests" value={String(analytics.appointmentRequests)} />
+        <Metric icon={<PhoneCall className="h-5 w-5" />} label="Human handoff requests" value={String(analytics.handoffRequests)} />
+        <Metric icon={<Star className="h-5 w-5" />} label="Top lead source" value={analytics.topLeadSource} />
       </section>
 
       <section className="rounded-lg border border-white/70 bg-[linear-gradient(180deg,#ffffff,#f7f9fb)] p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">

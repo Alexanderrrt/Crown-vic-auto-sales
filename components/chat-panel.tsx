@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SendHorizontal, Sparkles } from "lucide-react";
 
 type Message = { role: "user" | "assistant"; content: string };
@@ -17,13 +17,19 @@ export function ChatPanel({ vehicleSlug }: { vehicleSlug?: string }) {
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | undefined>();
 
+  useEffect(() => {
+    void trackEvent("chat_widget_viewed", { vehicleSlug });
+  }, [vehicleSlug]);
+
   async function sendMessage() {
     if (!input.trim()) return;
+    const submittedInput = input.trim();
 
-    const nextMessages = [...messages, { role: "user" as const, content: input.trim() }];
+    const nextMessages = [...messages, { role: "user" as const, content: submittedInput }];
     setMessages(nextMessages);
     setInput("");
     setLoading(true);
+    await trackEvent("chat_prompt_submitted", { vehicleSlug, prompt: submittedInput.slice(0, 160) });
 
     try {
       const response = await fetch("/api/chat", {
@@ -39,6 +45,12 @@ export function ChatPanel({ vehicleSlug }: { vehicleSlug?: string }) {
       const data = await response.json();
       if (data.sessionId) setSessionId(data.sessionId);
       setMessages([...nextMessages, { role: "assistant", content: data.message ?? "I'm here to help." }]);
+      await trackEvent("chat_response_received", {
+        vehicleSlug,
+        buyerIntent: data.buyerIntent,
+        leadId: data.leadId,
+        recommendationSlugs: data.recommendationSlugs,
+      });
     } catch {
       setMessages([
         ...nextMessages,
@@ -118,4 +130,22 @@ function getVisitorId() {
   const value = crypto.randomUUID();
   window.localStorage.setItem(key, value);
   return value;
+}
+
+async function trackEvent(eventType: string, metadata: Record<string, unknown>) {
+  try {
+    await fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventType,
+        visitorId: getVisitorId(),
+        vehicleSlug: typeof metadata.vehicleSlug === "string" ? metadata.vehicleSlug : undefined,
+        leadId: typeof metadata.leadId === "string" ? metadata.leadId : undefined,
+        metadata,
+      }),
+    });
+  } catch {
+    // Ignore background analytics failures in the shopper UI.
+  }
 }
