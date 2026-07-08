@@ -1,4 +1,5 @@
 import { InventoryExplorer } from "@/components/inventory-explorer";
+import { SavedVehiclesPanel } from "@/components/saved-vehicles-panel";
 import { getInventory } from "@/lib/inventory";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +20,7 @@ export default async function InventoryPage() {
           <span className="rounded-full border border-white/80 bg-white/80 px-4 py-2 shadow-sm">Trade-in and financing CTAs on every listing</span>
           <span className="rounded-full border border-white/80 bg-white/80 px-4 py-2 shadow-sm">Built for faster lead capture</span>
         </div>
+        <SavedVehiclesPanel vehicles={inventoryVehicles} />
         <InventoryExplorer vehicles={inventoryVehicles} />
       </div>
     </main>

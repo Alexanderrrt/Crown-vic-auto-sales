@@ -1,8 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ChatPanel } from "@/components/chat-panel";
 import { LeadForm } from "@/components/lead-form";
+import { VehicleCollectionActions } from "@/components/vehicle-collection-actions";
+import { VehicleGallery } from "@/components/vehicle-gallery";
+import { VehicleViewTracker } from "@/components/vehicle-view-tracker";
 import { getVehicleBySlug } from "@/lib/inventory";
 
 export const dynamic = "force-dynamic";
@@ -12,9 +14,11 @@ export default async function VehiclePage({ params }: { params: Promise<{ slug: 
   const vehicle = await getVehicleBySlug(slug);
   if (!vehicle) notFound();
   const gallery = vehicle.media?.length ? vehicle.media : [vehicle.image];
+  const specGroups = groupSpecs(vehicle.specs ?? []);
 
   return (
     <main className="bg-[#f7f1e7] px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
+      <VehicleViewTracker vehicleSlug={vehicle.slug} />
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[38rem] bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.22),transparent_36%),radial-gradient(circle_at_top_right,rgba(20,184,166,0.18),transparent_30%)]" />
       <div className="mx-auto mb-6 flex w-full max-w-7xl items-center justify-between gap-4">
         <Link href="/inventory" className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-white">
@@ -31,23 +35,13 @@ export default async function VehiclePage({ params }: { params: Promise<{ slug: 
       </div>
       <div className="mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[1.12fr_0.88fr]">
         <section className="overflow-hidden rounded-[2rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(249,241,228,0.96))] shadow-[0_30px_90px_rgba(148,163,184,0.18)]">
-          <div className="relative aspect-[16/10] bg-slate-100">
-            <Image src={vehicle.image} alt={vehicle.title} fill priority sizes="(min-width: 1024px) 58vw, 100vw" className="object-cover" />
-            <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-slate-950/45 to-transparent" />
+          <div className="relative">
+            <VehicleGallery title={vehicle.title} images={gallery} />
             <div className="absolute left-4 top-4 flex flex-wrap gap-2">
               <span className="rounded-full bg-white/95 px-3 py-1 text-xs font-bold capitalize text-slate-950 shadow-sm">{vehicle.status ?? "available"}</span>
               {vehicle.isFeatured ? <span className="rounded-full bg-amber-300 px-3 py-1 text-xs font-bold text-slate-950">Featured</span> : null}
             </div>
           </div>
-          {gallery.length > 1 ? (
-            <div className="grid grid-cols-4 gap-3 border-b border-slate-200/70 px-6 py-4">
-              {gallery.slice(0, 4).map((media, index) => (
-                <div key={`${media}-${index}`} className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/80 bg-white shadow-sm">
-                  <Image src={media} alt={`${vehicle.title} view ${index + 1}`} fill sizes="25vw" className="object-cover" />
-                </div>
-              ))}
-            </div>
-          ) : null}
           <div className="p-6">
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">{vehicle.category}</p>
             <h1 className="mt-2 text-4xl font-black">{vehicle.title}</h1>
@@ -70,6 +64,60 @@ export default async function VehiclePage({ params }: { params: Promise<{ slug: 
               <ActionStat label="Best fit for" value={vehicle.bodyStyle ?? "Daily driving"} />
               <ActionStat label="Next move" value="Ask about payments or trade-in" />
             </div>
+            <div className="mt-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+              <div className="rounded-[28px] border border-white/80 bg-white/85 p-5 shadow-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-700">Equipment and highlights</p>
+                    <h2 className="mt-2 text-2xl font-black text-slate-950">More detail before you reach out</h2>
+                  </div>
+                  <a
+                    href={`https://www.carfax.com/VehicleHistory/ar20/${vehicle.vin ?? vehicle.slug}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+                  >
+                    CARFAX / history
+                  </a>
+                </div>
+                <div className="mt-5 space-y-5">
+                  {specGroups.length ? (
+                    specGroups.map((group) => (
+                      <div key={group.name}>
+                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">{group.name}</p>
+                        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                          {group.items.map((item) => (
+                            <div key={`${group.name}-${item.label}`} className="rounded-[22px] border border-slate-200/70 bg-slate-50/80 p-4">
+                              <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{item.label}</p>
+                              <p className="mt-1 text-sm font-semibold text-slate-900">{item.value}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <FallbackSpec label="Exterior color" value={vehicle.exteriorColor ?? "Ask sales"} />
+                      <FallbackSpec label="Interior color" value={vehicle.interiorColor ?? "Ask sales"} />
+                      <FallbackSpec label="Fuel type" value={vehicle.fuelType ?? "Ask sales"} />
+                      <FallbackSpec label="Body style" value={vehicle.bodyStyle ?? "Ask sales"} />
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="rounded-[28px] border border-slate-200 bg-[linear-gradient(180deg,#16212b,#0f172a)] p-5 text-white shadow-[0_24px_70px_rgba(15,23,42,0.22)]">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-300">Payment planning</p>
+                <h2 className="mt-2 text-2xl font-black">Estimate the conversation before you submit.</h2>
+                <div className="mt-5 space-y-3">
+                  <PaymentRow label="Vehicle price" value={vehicle.price || "Ask sales"} />
+                  <PaymentRow label="Estimated down" value={estimateDownPayment(vehicle.priceNumber)} />
+                  <PaymentRow label="Estimated monthly" value={estimateMonthly(vehicle.priceNumber)} />
+                </div>
+                <p className="mt-4 text-sm leading-6 text-slate-300">
+                  Estimates are for shopping guidance only. Final monthly payment depends on credit, taxes, fees, lender terms, and approved structure.
+                </p>
+              </div>
+            </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="#financing" className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
                 Get financing help
@@ -81,6 +129,7 @@ export default async function VehiclePage({ params }: { params: Promise<{ slug: 
                 Book a test drive
               </Link>
             </div>
+            <VehicleCollectionActions slug={vehicle.slug} compact />
           </div>
         </section>
         <aside className="space-y-5">
@@ -133,4 +182,44 @@ function ActionStat({ label, value }: { label: string; value: string }) {
       <p className="mt-1 text-sm font-semibold text-slate-900">{value}</p>
     </div>
   );
+}
+
+function FallbackSpec({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[22px] border border-slate-200/70 bg-slate-50/80 p-4">
+      <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{label}</p>
+      <p className="mt-1 text-sm font-semibold text-slate-900">{value}</p>
+    </div>
+  );
+}
+
+function PaymentRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+      <span className="text-sm text-slate-300">{label}</span>
+      <span className="text-sm font-bold text-white">{value}</span>
+    </div>
+  );
+}
+
+function estimateDownPayment(price?: number) {
+  if (!price) return "Ask sales";
+  return `$${Math.round(price * 0.1).toLocaleString()}`;
+}
+
+function estimateMonthly(price?: number) {
+  if (!price) return "Ask sales";
+  const monthly = Math.round((price * 0.9) / 60);
+  return `$${monthly.toLocaleString()}/mo est.`;
+}
+
+function groupSpecs(specs: NonNullable<Awaited<ReturnType<typeof getVehicleBySlug>>>["specs"]) {
+  const groups = new Map<string, { name: string; items: { label: string; value: string }[] }>();
+  for (const spec of specs ?? []) {
+    const name = spec.group || "Features";
+    const existing = groups.get(name) ?? { name, items: [] };
+    existing.items.push({ label: spec.label, value: spec.value });
+    groups.set(name, existing);
+  }
+  return [...groups.values()];
 }

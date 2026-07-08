@@ -29,7 +29,16 @@ export type Vehicle = {
   leadCount?: number;
   image: string;
   media?: string[];
+  specs?: VehicleSpec[];
   featuredLabel: string;
+};
+
+export type VehicleSpec = {
+  id?: string;
+  group: string;
+  label: string;
+  value: string;
+  sortOrder?: number;
 };
 
 export const dealershipFacts = {
@@ -87,6 +96,16 @@ export const featuredVehicles: Vehicle[] = [
     status: "available",
     isFeatured: true,
     image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1400&q=80",
+    media: [
+      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80",
+    ],
+    specs: [
+      { group: "Highlights", label: "Trim", value: "LE", sortOrder: 1 },
+      { group: "Highlights", label: "Fuel economy", value: "53 city / 46 hwy", sortOrder: 2 },
+      { group: "Comfort", label: "Interior", value: "Black cloth", sortOrder: 3 },
+      { group: "Safety", label: "Driver support", value: "Modern commuter assist features", sortOrder: 4 },
+    ],
     featuredLabel: "Featured",
   },
   {
@@ -105,6 +124,16 @@ export const featuredVehicles: Vehicle[] = [
     status: "available",
     isFeatured: true,
     image: "https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1400&q=80",
+    media: [
+      "https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1400&q=80",
+    ],
+    specs: [
+      { group: "Highlights", label: "Trim", value: "SE", sortOrder: 1 },
+      { group: "EV", label: "Charging", value: "Fast-charge capable", sortOrder: 2 },
+      { group: "Space", label: "Body style", value: "Electric crossover", sortOrder: 3 },
+      { group: "Use case", label: "Best for", value: "Daily commuting and family errands", sortOrder: 4 },
+    ],
     featuredLabel: "EV pick",
   },
 ];
@@ -123,6 +152,16 @@ export const inventoryVehicles: Vehicle[] = [
     transmission: "Automatic",
     drivetrain: "FWD",
     image: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1400&q=80",
+    media: [
+      "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=80",
+    ],
+    specs: [
+      { group: "Highlights", label: "Trim", value: "Two", sortOrder: 1 },
+      { group: "Budget", label: "Positioning", value: "Value commuter", sortOrder: 2 },
+      { group: "Efficiency", label: "Fuel economy", value: "53 city / 46 hwy", sortOrder: 3 },
+      { group: "City use", label: "Footprint", value: "Compact hatchback", sortOrder: 4 },
+    ],
     featuredLabel: "Value",
   },
   {
@@ -137,6 +176,7 @@ export const inventoryVehicles: Vehicle[] = [
     transmission: "Automatic",
     drivetrain: "AWD",
     image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80",
+    media: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80"],
     featuredLabel: "Popular",
   },
   {
@@ -151,6 +191,7 @@ export const inventoryVehicles: Vehicle[] = [
     transmission: "Automatic",
     drivetrain: "FWD",
     image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80",
+    media: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80"],
     featuredLabel: "Commuter",
   },
   {
@@ -165,6 +206,7 @@ export const inventoryVehicles: Vehicle[] = [
     transmission: "CVT",
     drivetrain: "AWD",
     image: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1400&q=80",
+    media: ["https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1400&q=80"],
     featuredLabel: "Luxury",
   },
   {
@@ -179,6 +221,7 @@ export const inventoryVehicles: Vehicle[] = [
     transmission: "Automatic",
     drivetrain: "FWD",
     image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=80",
+    media: ["https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=80"],
     featuredLabel: "Efficiency",
   },
   {
@@ -193,6 +236,7 @@ export const inventoryVehicles: Vehicle[] = [
     transmission: "Automatic",
     drivetrain: "FWD",
     image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1400&q=80",
+    media: ["https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1400&q=80"],
     featuredLabel: "Family",
   },
 ];
@@ -227,6 +271,18 @@ export function toVehicle(row: Partial<Record<string, unknown>>): Vehicle {
     leadCount: toOptionalNumber(row.lead_count ?? row.leadCount),
     image: String(row.image ?? ""),
     media: Array.isArray(row.media) ? row.media.map(String) : undefined,
+    specs: Array.isArray(row.specs)
+      ? row.specs.map((item) => {
+          const spec = item as Record<string, unknown>;
+          return {
+            id: typeof spec.id === "string" ? spec.id : undefined,
+            group: String(spec.group ?? spec.spec_group ?? "Features"),
+            label: String(spec.label ?? ""),
+            value: String(spec.value ?? spec.spec_value ?? ""),
+            sortOrder: toOptionalNumber(spec.sortOrder ?? spec.sort_order),
+          };
+        })
+      : undefined,
     featuredLabel: String(row.featured_label ?? row.featuredLabel ?? "Featured"),
   };
 }

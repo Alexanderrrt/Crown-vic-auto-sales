@@ -22,6 +22,8 @@ export const vehicleCreateSchema = z.object({
   make: z.string().max(80).optional(),
   model: z.string().max(80).optional(),
   trim: z.string().max(80).optional(),
+  vin: z.string().max(80).optional(),
+  stockNumber: z.string().max(80).optional(),
   category: z.string().min(1).max(120).default("Inventory"),
   summary: z.string().max(800).default(""),
   price: z.string().max(80).default(""),
@@ -29,9 +31,22 @@ export const vehicleCreateSchema = z.object({
   mpg: z.string().max(80).default(""),
   transmission: z.string().max(80).default("Automatic"),
   drivetrain: z.string().max(80).default("FWD"),
+  exteriorColor: z.string().max(80).optional(),
+  interiorColor: z.string().max(80).optional(),
   fuelType: z.string().max(80).optional(),
   bodyStyle: z.string().max(80).optional(),
   image: z.string().url().or(z.literal("")).default(""),
+  media: z.array(z.string().url()).default([]),
+  specs: z
+    .array(
+      z.object({
+        group: z.string().max(80).default("Features"),
+        label: z.string().min(1).max(120),
+        value: z.string().min(1).max(200),
+        sortOrder: z.number().int().min(0).default(0),
+      }),
+    )
+    .default([]),
   status: z.enum(["available", "pending", "sold", "draft"]).default("available"),
   isFeatured: z.boolean().default(false),
 });
