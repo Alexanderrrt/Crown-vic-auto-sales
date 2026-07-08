@@ -51,13 +51,19 @@ export function AdminVehicleForm() {
   }
 
   return (
-    <form action={submit} className="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm">
+    <form
+      action={submit}
+      className="rounded-[28px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,243,235,0.96))] p-6 shadow-[0_24px_60px_rgba(15,23,42,0.10)]"
+    >
       <div className="flex items-center gap-2 text-amber-700">
         <PlusCircle className="h-4 w-4" />
         <p className="text-xs font-bold uppercase tracking-[0.18em]">Inventory manager</p>
       </div>
-      <h2 className="mt-2 text-2xl font-black">Add vehicle</h2>
-      <div className="mt-5 grid gap-3 md:grid-cols-3">
+      <h2 className="mt-2 text-2xl font-black text-slate-950">Add vehicle</h2>
+      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+        Create a new listing with the details your sales team and shoppers need first. You can refine media, pricing, and merchandising after publish.
+      </p>
+      <div className="mt-6 grid gap-4 md:grid-cols-3">
         <Field name="title" label="Title" required className="md:col-span-2" />
         <Field name="year" label="Year" />
         <Field name="make" label="Make" />
@@ -70,8 +76,11 @@ export function AdminVehicleForm() {
         <Field name="bodyStyle" label="Body style" />
         <Field name="image" label="Image URL" className="md:col-span-2" />
         <label>
-          <span className="mb-1.5 block text-sm font-semibold text-neutral-700">Status</span>
-          <select name="status" className="h-11 w-full rounded-md border border-neutral-200 bg-neutral-50 px-3 text-sm outline-none">
+          <span className="mb-1.5 block text-sm font-semibold text-slate-700">Status</span>
+          <select
+            name="status"
+            className="h-12 w-full rounded-2xl border border-white/80 bg-white/90 px-4 text-sm text-slate-900 outline-none transition focus:border-amber-300 focus:ring-2 focus:ring-amber-200/70"
+          >
             <option value="available">Available</option>
             <option value="pending">Pending</option>
             <option value="sold">Sold</option>
@@ -79,15 +88,22 @@ export function AdminVehicleForm() {
           </select>
         </label>
         <label className="md:col-span-3">
-          <span className="mb-1.5 block text-sm font-semibold text-neutral-700">Summary</span>
-          <textarea name="summary" rows={3} className="w-full resize-none rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm outline-none" />
+          <span className="mb-1.5 block text-sm font-semibold text-slate-700">Summary</span>
+          <textarea
+            name="summary"
+            rows={4}
+            className="w-full resize-none rounded-2xl border border-white/80 bg-white/90 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-amber-300 focus:ring-2 focus:ring-amber-200/70"
+          />
         </label>
-        <label className="flex items-center gap-2 text-sm font-bold text-neutral-700">
-          <input name="isFeatured" type="checkbox" className="h-4 w-4" />
+        <label className="inline-flex w-fit items-center gap-3 rounded-full border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold text-slate-800">
+          <input name="isFeatured" type="checkbox" className="h-4 w-4 rounded border-amber-400 text-amber-600" />
           Feature on homepage
         </label>
       </div>
-      <button disabled={state === "loading"} className="mt-4 inline-flex h-11 items-center gap-2 rounded-md bg-neutral-950 px-4 text-sm font-bold text-white transition hover:bg-neutral-800 disabled:opacity-60">
+      <button
+        disabled={state === "loading"}
+        className="mt-5 inline-flex h-12 items-center gap-2 rounded-full bg-slate-950 px-5 text-sm font-bold text-white transition hover:bg-slate-800 disabled:opacity-60"
+      >
         <PlusCircle className="h-4 w-4" />
         {state === "loading" ? "Creating..." : "Create vehicle"}
       </button>
@@ -99,8 +115,12 @@ export function AdminVehicleForm() {
 function Field({ name, label, required = false, className = "" }: { name: string; label: string; required?: boolean; className?: string }) {
   return (
     <label className={className}>
-      <span className="mb-1.5 block text-sm font-semibold text-neutral-700">{label}</span>
-      <input required={required} name={name} className="h-11 w-full rounded-md border border-neutral-200 bg-neutral-50 px-3 text-sm outline-none transition focus:border-neutral-400" />
+      <span className="mb-1.5 block text-sm font-semibold text-slate-700">{label}</span>
+      <input
+        required={required}
+        name={name}
+        className="h-12 w-full rounded-2xl border border-white/80 bg-white/90 px-4 text-sm text-slate-900 outline-none transition focus:border-amber-300 focus:ring-2 focus:ring-amber-200/70"
+      />
     </label>
   );
 }

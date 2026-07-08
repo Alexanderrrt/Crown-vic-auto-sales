@@ -50,12 +50,15 @@ export function LeadForm({ source, vehicleSlug, title = "Send an inquiry", compa
   }
 
   return (
-    <form action={submit} className="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm">
+    <form
+      action={submit}
+      className="rounded-[30px] border border-white/65 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(255,247,235,0.94))] p-6 shadow-[0_24px_70px_rgba(15,23,42,0.22)] backdrop-blur"
+    >
       <div className="flex items-center gap-2 text-amber-700">
         {source === "test-drive" ? <CalendarClock className="h-4 w-4" /> : <SendHorizontal className="h-4 w-4" />}
         <p className="text-xs font-bold uppercase tracking-[0.18em]">{source.replace("-", " ")}</p>
       </div>
-      <h2 className="mt-2 text-xl font-black text-neutral-950">{title}</h2>
+      <h2 className="mt-2 text-xl font-black text-slate-950">{title}</h2>
 
       <div className={`mt-5 grid gap-3 ${compact ? "" : "sm:grid-cols-2"}`}>
         <Field name="name" label="Name" required />
@@ -65,18 +68,25 @@ export function LeadForm({ source, vehicleSlug, title = "Send an inquiry", compa
         {source === "trade-in" && <Field name="tradeVehicle" label="Trade vehicle" className={compact ? "" : "sm:col-span-2"} />}
         {source === "test-drive" && <Field name="appointmentAt" label="Preferred time" className={compact ? "" : "sm:col-span-2"} />}
         <label className={compact ? "" : "sm:col-span-2"}>
-          <span className="mb-1.5 block text-sm font-semibold text-neutral-700">Message</span>
-          <textarea name="message" rows={compact ? 3 : 4} className="w-full resize-none rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm outline-none transition focus:border-neutral-400" />
+          <span className="mb-1.5 block text-sm font-semibold text-slate-700">Message</span>
+          <textarea
+            name="message"
+            rows={compact ? 3 : 4}
+            className="w-full resize-none rounded-2xl border border-white/85 bg-white/90 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-amber-300 focus:ring-2 focus:ring-amber-200/70"
+          />
         </label>
       </div>
 
       {state === "success" ? (
-        <div className="mt-4 flex items-center gap-2 rounded-md bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800">
+        <div className="mt-4 flex items-center gap-2 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
           <CheckCircle2 className="h-4 w-4" />
           Sent. The sales team can follow up from the CRM.
         </div>
       ) : (
-        <button disabled={state === "loading"} className="mt-4 inline-flex h-11 items-center gap-2 rounded-md bg-neutral-950 px-4 text-sm font-bold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-60">
+        <button
+          disabled={state === "loading"}
+          className="mt-4 inline-flex h-12 items-center gap-2 rounded-full bg-slate-950 px-5 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+        >
           <SendHorizontal className="h-4 w-4" />
           {state === "loading" ? "Sending..." : "Send"}
         </button>
@@ -102,8 +112,13 @@ function Field({
 }) {
   return (
     <label className={className}>
-      <span className="mb-1.5 block text-sm font-semibold text-neutral-700">{label}</span>
-      <input required={required} name={name} type={type} className="h-11 w-full rounded-md border border-neutral-200 bg-neutral-50 px-3 text-sm outline-none transition focus:border-neutral-400" />
+      <span className="mb-1.5 block text-sm font-semibold text-slate-700">{label}</span>
+      <input
+        required={required}
+        name={name}
+        type={type}
+        className="h-12 w-full rounded-2xl border border-white/85 bg-white/90 px-4 text-sm text-slate-900 outline-none transition focus:border-amber-300 focus:ring-2 focus:ring-amber-200/70"
+      />
     </label>
   );
 }

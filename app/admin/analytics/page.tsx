@@ -20,7 +20,7 @@ export default async function AdminAnalyticsPage() {
         <Metric icon={<Star className="h-5 w-5" />} label="Top vehicle" value={analytics.popularVehicle} />
       </section>
 
-      <section className="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-white/70 bg-[linear-gradient(180deg,#ffffff,#f7f9fb)] p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
         <h2 className="text-2xl font-black">Tracking priorities</h2>
         <div className="mt-5 grid gap-3 md:grid-cols-3">
           <Panel title="Inventory demand" body="Track views, saves, chat mentions, and lead submissions per vehicle." />
@@ -34,7 +34,7 @@ export default async function AdminAnalyticsPage() {
 
 function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm">
+    <div className="rounded-lg border border-white/70 bg-[linear-gradient(180deg,#ffffff,#f7f9fb)] p-5 shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
       <div className="text-amber-700">{icon}</div>
       <p className="mt-4 text-2xl font-black">{value}</p>
       <p className="mt-1 text-sm font-semibold text-neutral-600">{label}</p>
@@ -44,7 +44,7 @@ function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; 
 
 function Panel({ title, body }: { title: string; body: string }) {
   return (
-    <div className="rounded-lg border border-neutral-200 bg-neutral-50 p-4">
+    <div className="rounded-lg border border-slate-200 bg-[linear-gradient(180deg,#ffffff,#f4f6f8)] p-4">
       <p className="font-black">{title}</p>
       <p className="mt-2 text-sm leading-6 text-neutral-600">{body}</p>
     </div>

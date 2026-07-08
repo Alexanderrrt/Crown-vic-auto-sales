@@ -14,15 +14,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const clerkConfigured = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
   return (
-    <main className="min-h-screen bg-neutral-100 text-neutral-950">
-      <aside className="fixed inset-y-0 left-0 hidden w-64 border-r border-neutral-200 bg-white p-5 lg:block">
+    <main className="min-h-screen bg-[linear-gradient(180deg,#f2f4f7,#e7ebf0)] text-neutral-950">
+      <aside className="fixed inset-y-0 left-0 hidden w-64 border-r border-slate-800/70 bg-[linear-gradient(180deg,#171c24,#10141b)] p-5 text-white shadow-[24px_0_48px_rgba(15,23,42,0.18)] lg:block">
         <Link href="/" className="block">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-700">Crown Vic</p>
-          <h1 className="mt-1 text-xl font-black">Dealer OS</h1>
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-300">Crown Vic</p>
+          <h1 className="mt-1 text-xl font-black text-white">Dealer OS</h1>
+          <p className="mt-2 text-sm text-slate-400">Inventory, leads, chat, and analytics in one place.</p>
         </Link>
         <nav className="mt-8 space-y-1">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className="flex h-11 items-center gap-3 rounded-md px-3 text-sm font-bold text-neutral-700 transition hover:bg-neutral-100 hover:text-neutral-950">
+            <Link key={item.href} href={item.href} className="flex h-11 items-center gap-3 rounded-md px-3 text-sm font-bold text-slate-300 transition hover:bg-white/8 hover:text-white">
               <item.icon className="h-4 w-4" />
               {item.label}
             </Link>
@@ -31,23 +32,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       <section className="lg:pl-64">
-        <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white/90 px-4 py-3 backdrop-blur sm:px-6 lg:px-8">
+        <header className="sticky top-0 z-10 border-b border-white/50 bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(247,249,251,0.88))] px-4 py-3 shadow-[0_10px_30px_rgba(15,23,42,0.06)] backdrop-blur sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-500">Authenticated staff workspace</p>
-              <h2 className="text-lg font-black">Inventory, leads, chat, and analytics</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Authenticated staff workspace</p>
+              <h2 className="text-lg font-black text-slate-950">Inventory, leads, chat, and analytics</h2>
             </div>
             {clerkConfigured ? (
               <UserButton />
             ) : (
-              <span className="rounded-md bg-amber-100 px-3 py-2 text-xs font-black uppercase tracking-[0.16em] text-amber-800">
+              <span className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black uppercase tracking-[0.16em] text-amber-800">
                 Clerk env needed
               </span>
             )}
           </div>
           <nav className="mt-3 flex gap-2 overflow-auto lg:hidden">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href} className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-neutral-200 px-3 text-sm font-bold">
+              <Link key={item.href} href={item.href} className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-slate-200 bg-white/80 px-3 text-sm font-bold text-slate-700">
                 <item.icon className="h-4 w-4" />
                 {item.label}
               </Link>

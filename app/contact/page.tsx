@@ -5,9 +5,9 @@ import { dealershipFacts } from "@/lib/dealership-data";
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-neutral-950 px-4 py-8 text-white sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[linear-gradient(180deg,#14212d_0%,#1f3641_42%,#f7f1e7_42%,#f7f1e7_100%)] px-4 py-8 text-white sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-6xl">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-neutral-300 transition hover:text-white">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-200 transition hover:text-white">
           <ArrowLeft className="h-4 w-4" />
           Back to showroom
         </Link>
@@ -17,7 +17,7 @@ export default function ContactPage() {
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300">Crown Vic Auto Sales</p>
               <h1 className="mt-3 text-4xl font-black sm:text-5xl">Talk with a real sales team.</h1>
-              <p className="mt-4 text-lg leading-8 text-neutral-300">
+              <p className="mt-4 max-w-xl text-lg leading-8 text-slate-200">
                 Ask about availability, financing, trade-ins, appointments, or the best hybrid and EV options for your budget.
               </p>
             </div>
@@ -38,10 +38,10 @@ export default function ContactPage() {
 
 function Info({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="flex gap-3 rounded-lg border border-white/10 bg-white/5 p-4">
+    <div className="flex gap-3 rounded-[24px] border border-white/10 bg-white/8 p-4 backdrop-blur">
       <div className="text-amber-300">{icon}</div>
       <div>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-400">{label}</p>
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-300">{label}</p>
         <p className="mt-1 font-semibold">{value}</p>
       </div>
     </div>
