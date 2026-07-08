@@ -38,6 +38,11 @@ export function InventoryAdminTable({ vehicles }: { vehicles: Vehicle[] }) {
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-700">Current lot</p>
       <h1 className="mt-2 text-2xl font-black">Inventory control</h1>
       <p className="mt-2 text-sm text-slate-600">Quickly feature vehicles, cycle their live status, or remove older units from the lot.</p>
+      <div className="mt-4 grid gap-3 md:grid-cols-3">
+        <MiniGuide title="Feature" body="Push a vehicle higher across the shopper experience." />
+        <MiniGuide title="Set status" body="Use available for live units, pending for active deals, and draft for hidden work." />
+        <MiniGuide title="Delete" body="Remove a unit only when you are sure it should leave the system." />
+      </div>
       {message ? <p className="mt-3 text-sm font-semibold text-slate-700">{message}</p> : null}
       <div className="mt-5 overflow-auto">
         <table className="w-full min-w-[920px] text-left text-sm">
@@ -66,7 +71,7 @@ export function InventoryAdminTable({ vehicles }: { vehicles: Vehicle[] }) {
                       </div>
                       <div>
                         <p className="font-black">{vehicle.title}</p>
-                        <p className="text-xs text-neutral-500">{[vehicle.category, vehicle.trim, vehicle.stockNumber].filter(Boolean).join(" • ")}</p>
+                        <p className="text-xs text-neutral-500">{[vehicle.category, vehicle.trim, vehicle.stockNumber].filter(Boolean).join(" | ")}</p>
                       </div>
                     </div>
                   </td>
@@ -112,5 +117,14 @@ export function InventoryAdminTable({ vehicles }: { vehicles: Vehicle[] }) {
         </table>
       </div>
     </section>
+  );
+}
+
+function MiniGuide({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+      <p className="text-sm font-black text-slate-900">{title}</p>
+      <p className="mt-1 text-sm leading-6 text-slate-600">{body}</p>
+    </div>
   );
 }

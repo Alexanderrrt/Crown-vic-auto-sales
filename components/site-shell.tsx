@@ -6,12 +6,11 @@ import {
   ArrowRight,
   CarFront,
   CalendarClock,
+  Clock,
   MapPin,
   Menu,
   MessageCircle,
   Phone,
-  ShieldCheck,
-  Sparkles,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -21,12 +20,6 @@ const publicLinks = [
   { href: "/", label: "Home" },
   { href: "/inventory", label: "Inventory" },
   { href: "/contact", label: "Contact" },
-];
-
-const mobilePrompts = [
-  "Hybrid and EV focused inventory",
-  "AI showroom assistance",
-  "Financing, trade-in, and test-drive help",
 ];
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
@@ -41,40 +34,48 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className="border-b border-slate-200/70 bg-[linear-gradient(90deg,#f4ead6,#f7f2e8,#edf4f1)]">
-        <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-slate-600 sm:px-6 lg:px-8">
+      <div className="bg-slate-900 text-slate-300">
+        <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2 text-xs font-medium sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-3.5 w-3.5 text-amber-700" />
-            <span>Independent hybrid and EV dealership</span>
+            <MapPin className="h-3.5 w-3.5 text-red-400" />
+            <span>
+              {dealershipFacts.addressLine}, {dealershipFacts.city}
+            </span>
           </div>
           <div className="hidden items-center gap-5 md:flex">
-            <span>{dealershipFacts.hours}</span>
-            <span>{dealershipFacts.city}</span>
+            <span className="flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 text-red-400" />
+              {dealershipFacts.hours}
+            </span>
+            <a href={`tel:${dealershipFacts.phoneHref}`} className="flex items-center gap-1.5 font-semibold text-white transition hover:text-red-300">
+              <Phone className="h-3.5 w-3.5 text-red-400" />
+              {dealershipFacts.phone}
+            </a>
           </div>
         </div>
       </div>
 
-      <header className="sticky top-0 z-40 border-b border-white/8 bg-[linear-gradient(180deg,rgba(11,24,31,0.96),rgba(17,35,44,0.92))] text-white shadow-[0_12px_30px_rgba(15,23,42,0.18)] backdrop-blur-xl">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
-            <div className="flex h-12 w-12 items-center justify-center rounded-[18px] bg-[linear-gradient(135deg,#f4c56a,#f29e5a)] text-slate-950 shadow-[0_12px_26px_rgba(242,158,90,0.24)]">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-600 text-white shadow-sm">
               <CarFront className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.32em] text-amber-200">Crown Vic Auto Sales</p>
-              <p className="text-sm text-slate-300">Premium hybrid and EV buying experience</p>
+              <p className="font-heading text-base font-bold tracking-tight text-slate-900">Crown Vic Auto Sales</p>
+              <p className="text-xs text-slate-500">Hybrid &amp; EV specialists — San Jose</p>
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-2 md:flex">
+          <nav className="hidden items-center gap-1 md:flex">
             {publicLinks.map((link) => {
               const active = pathname === link.href;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`rounded-full px-4 py-2 text-sm font-bold transition ${
-                    active ? "bg-white text-slate-950" : "text-slate-200 hover:bg-white/10 hover:text-white"
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition duration-200 ${
+                    active ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                   }`}
                 >
                   {link.label}
@@ -83,19 +84,19 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="hidden items-center gap-2 md:flex">
             <a
               href={`tel:${dealershipFacts.phoneHref}`}
-              className="rounded-full border border-white/14 bg-white/6 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-100"
             >
-              <Phone className="mr-2 inline h-4 w-4 text-amber-200" />
+              <Phone className="h-4 w-4" />
               {dealershipFacts.phone}
             </a>
             <Link
               href="/contact"
-              className="rounded-full bg-[linear-gradient(135deg,#f4c56a,#f29e5a)] px-4 py-2 text-sm font-black text-slate-950 transition hover:brightness-105"
+              className="inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-red-700"
             >
-              <MessageCircle className="mr-2 inline h-4 w-4" />
+              <MessageCircle className="h-4 w-4" />
               Talk to sales
             </Link>
           </div>
@@ -103,7 +104,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/14 bg-white/6 text-white md:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-700 transition hover:bg-slate-100 md:hidden"
             aria-label="Toggle menu"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -111,30 +112,16 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         </div>
 
         {open ? (
-          <div className="border-t border-white/8 bg-[linear-gradient(180deg,#12212b,#10212a)] px-4 py-4 md:hidden">
-            <div className="mx-auto flex w-full max-w-7xl flex-col gap-4">
-              <div className="rounded-[28px] border border-white/10 bg-white/6 p-4">
-                <div className="flex items-center gap-2 text-amber-200">
-                  <Sparkles className="h-4 w-4" />
-                  <p className="text-xs font-black uppercase tracking-[0.18em]">Modern shopping flow</p>
-                </div>
-                <div className="mt-3 space-y-2">
-                  {mobilePrompts.map((item) => (
-                    <div key={item} className="rounded-2xl border border-white/8 bg-white/6 px-3 py-3 text-sm font-semibold text-slate-100">
-                      {item}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3">
+          <div className="border-t border-slate-200 bg-white px-4 py-4 md:hidden">
+            <div className="mx-auto flex w-full max-w-7xl flex-col gap-3">
+              <div className="flex flex-col gap-2">
                 {publicLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className={`rounded-2xl px-4 py-3 text-sm font-black transition ${
-                      pathname === link.href ? "bg-white text-slate-950" : "bg-white/6 text-white"
+                    className={`rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                      pathname === link.href ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                     }`}
                   >
                     {link.label}
@@ -142,15 +129,20 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                 ))}
               </div>
 
-              <div className="grid gap-3">
-                <a href={`tel:${dealershipFacts.phoneHref}`} className="rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm font-bold text-white">
+              <div className="grid gap-2 border-t border-slate-200 pt-3">
+                <a
+                  href={`tel:${dealershipFacts.phoneHref}`}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700"
+                >
+                  <Phone className="h-4 w-4" />
                   Call {dealershipFacts.phone}
                 </a>
                 <Link
                   href="/contact"
                   onClick={() => setOpen(false)}
-                  className="rounded-2xl bg-[linear-gradient(135deg,#f4c56a,#f29e5a)] px-4 py-3 text-sm font-black text-slate-950"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white"
                 >
+                  <MessageCircle className="h-4 w-4" />
                   Talk to sales
                 </Link>
               </div>
@@ -161,64 +153,75 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
       {children}
 
-      <footer className="border-t border-slate-200/70 bg-[linear-gradient(180deg,#10212a,#132833_48%,#1e3941_100%)] text-white">
-        <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[1.2fr_0.9fr_0.9fr] lg:px-8">
+      <footer className="border-t border-slate-800 bg-slate-900 text-white">
+        <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.2fr_0.9fr_0.9fr] lg:px-8">
           <div>
-            <p className="text-[11px] font-black uppercase tracking-[0.32em] text-amber-200">Crown Vic Auto Sales</p>
-            <h2 className="mt-3 max-w-xl text-3xl font-black tracking-[-0.03em] text-white">
-              A modern storefront for buyers shopping smarter hybrids and EVs.
-            </h2>
-            <p className="mt-4 max-w-xl text-sm leading-7 text-slate-300">
-              Built to help buyers compare vehicles, ask better questions, and move into trade-in, financing, and test-drive steps without the usual dealership friction.
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-600 text-white">
+                <CarFront className="h-5 w-5" />
+              </div>
+              <p className="font-heading text-lg font-bold tracking-tight">Crown Vic Auto Sales</p>
+            </div>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400">
+              Pre-owned hybrids and EVs, hand-picked for Bay Area commuters. Compare vehicles, ask questions, and move into
+              trade-in, financing, or a test drive without the usual dealership friction.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/inventory"
-                className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#f4c56a,#f29e5a)] px-4 py-2 text-sm font-black text-slate-950 transition hover:brightness-105"
+                className="inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-red-700"
               >
                 Shop inventory
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-full border border-white/14 bg-white/6 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/10"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-white/10"
               >
-                <CalendarClock className="h-4 w-4 text-amber-200" />
+                <CalendarClock className="h-4 w-4" />
                 Book a test drive
               </Link>
             </div>
           </div>
 
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-200">Visit and contact</p>
-            <div className="mt-5 space-y-4 text-sm text-slate-200">
-              <p className="flex items-start gap-3 rounded-[22px] border border-white/10 bg-white/6 p-4">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-200" />
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Visit and contact</p>
+            <div className="mt-5 space-y-3 text-sm text-slate-300">
+              <p className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
                 <span>
                   {dealershipFacts.addressLine}
                   <br />
                   {dealershipFacts.city}
                 </span>
               </p>
-              <a href={`tel:${dealershipFacts.phoneHref}`} className="flex items-center gap-3 rounded-[22px] border border-white/10 bg-white/6 p-4 font-bold text-white transition hover:bg-white/10">
-                <Phone className="h-4 w-4 text-amber-200" />
+              <a
+                href={`tel:${dealershipFacts.phoneHref}`}
+                className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4 font-semibold text-white transition hover:bg-white/10"
+              >
+                <Phone className="h-4 w-4 text-red-400" />
                 {dealershipFacts.phone}
               </a>
-              <div className="rounded-[22px] border border-white/10 bg-white/6 p-4">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-200">Hours</p>
-                <p className="mt-2 font-bold text-white">{dealershipFacts.hours}</p>
+              <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
+                <Clock className="h-4 w-4 text-red-400" />
+                <span className="font-semibold text-white">{dealershipFacts.hours}</span>
               </div>
             </div>
           </div>
 
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-200">Explore</p>
-            <div className="mt-5 flex flex-col gap-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Explore</p>
+            <div className="mt-5 flex flex-col gap-2">
               <FooterLink href="/inventory" label="Browse inventory" />
               <FooterLink href="/contact" label="Financing and trade-in help" />
               <FooterLink href="/contact" label="Talk to the dealership" />
             </div>
           </div>
+        </div>
+        <div className="border-t border-white/10">
+          <p className="mx-auto w-full max-w-7xl px-4 py-5 text-xs text-slate-500 sm:px-6 lg:px-8">
+            © {new Date().getFullYear()} Crown Vic Auto Sales. All vehicles subject to prior sale.
+          </p>
         </div>
       </footer>
     </>
@@ -229,7 +232,7 @@ function FooterLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="rounded-[20px] border border-white/10 bg-white/6 px-4 py-3 text-sm font-bold text-slate-100 transition hover:bg-white/10 hover:text-white"
+      className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-300 transition duration-200 hover:bg-white/10 hover:text-white"
     >
       {label}
     </Link>

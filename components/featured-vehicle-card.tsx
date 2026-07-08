@@ -1,32 +1,37 @@
 import Link from "next/link";
 import Image from "next/image";
-import { CarFront, Gauge, Fuel } from "lucide-react";
+import { ArrowRight, Fuel, Gauge } from "lucide-react";
 import type { Vehicle } from "@/lib/dealership-data";
 
 export function FeaturedVehicleCard({ vehicle }: { vehicle: Vehicle }) {
   return (
     <Link
       href={`/inventory/${vehicle.slug}`}
-      className="group overflow-hidden rounded-[1.9rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,242,233,0.94))] shadow-[0_26px_70px_rgba(148,163,184,0.18)] transition hover:-translate-y-1.5 hover:shadow-[0_32px_90px_rgba(148,163,184,0.22)]"
+      className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
         <Image src={vehicle.image} alt={vehicle.title} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover transition duration-500 group-hover:scale-105" />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/35 to-transparent" />
-        <div className="absolute left-4 top-4 rounded-full bg-slate-950 px-3 py-1 text-xs font-semibold text-white">{vehicle.featuredLabel}</div>
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/40 to-transparent" />
+        <div className="absolute left-4 top-4 rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">{vehicle.featuredLabel}</div>
       </div>
       <div className="space-y-4 p-5">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">{vehicle.category}</p>
-          <h3 className="mt-2 text-xl font-bold text-slate-950">{vehicle.title}</h3>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-red-600">{vehicle.category}</p>
+            <h3 className="mt-1 font-heading text-lg font-bold text-slate-900">{vehicle.title}</h3>
+          </div>
+          <p className="font-heading text-xl font-bold text-slate-900">{vehicle.price}</p>
         </div>
-        <div className="grid grid-cols-3 gap-3 text-sm text-slate-600">
-          <Meta icon={<CarFront className="h-4 w-4" />} label="Mileage" value={vehicle.mileage} />
-          <Meta icon={<Gauge className="h-4 w-4" />} label="Price" value={vehicle.price} />
+        <div className="grid grid-cols-2 gap-3 text-sm text-slate-600">
+          <Meta icon={<Gauge className="h-4 w-4" />} label="Mileage" value={vehicle.mileage} />
           <Meta icon={<Fuel className="h-4 w-4" />} label="MPG" value={vehicle.mpg} />
         </div>
-        <div className="flex items-center justify-between border-t border-slate-200/70 pt-3">
-          <p className="text-sm font-semibold text-slate-700">Shortlist-ready commuter pick</p>
-          <span className="rounded-full bg-amber-300 px-3 py-1.5 text-xs font-bold text-slate-950">See vehicle</span>
+        <div className="flex items-center justify-between border-t border-slate-200 pt-3">
+          <p className="text-sm font-semibold text-slate-600">See full details</p>
+          <span className="inline-flex items-center gap-1 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition duration-200 group-hover:bg-red-600">
+            View
+            <ArrowRight className="h-3.5 w-3.5" />
+          </span>
         </div>
       </div>
     </Link>
@@ -35,12 +40,12 @@ export function FeaturedVehicleCard({ vehicle }: { vehicle: Vehicle }) {
 
 function Meta({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/80 bg-white/80 p-3 shadow-sm">
-      <div className="flex items-center gap-1 text-slate-400">
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+      <div className="flex items-center gap-1.5 text-slate-500">
         {icon}
-        <span className="text-[10px] uppercase tracking-[0.2em]">{label}</span>
+        <span className="text-[10px] font-semibold uppercase tracking-[0.14em]">{label}</span>
       </div>
-      <p className="mt-2 font-semibold text-slate-900">{value}</p>
+      <p className="mt-1.5 font-semibold text-slate-900">{value}</p>
     </div>
   );
 }

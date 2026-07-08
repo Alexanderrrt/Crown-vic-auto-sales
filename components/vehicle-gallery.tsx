@@ -14,14 +14,15 @@ export function VehicleGallery({ title, images }: { title: string; images: strin
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-slate-950/45 to-transparent" />
       </div>
       {images.length > 1 ? (
-        <div className="grid grid-cols-4 gap-3 border-b border-slate-200/70 px-6 py-4">
+        <div className="grid grid-cols-4 gap-3 border-b border-slate-200 px-6 py-4">
           {images.slice(0, 8).map((media, index) => (
             <button
               key={`${media}-${index}`}
               type="button"
               onClick={() => setActive(index)}
-              className={`relative aspect-[4/3] overflow-hidden rounded-2xl border shadow-sm transition ${
-                active === index ? "border-amber-300 ring-2 ring-amber-200" : "border-white/80"
+              aria-label={`Show photo ${index + 1} of ${title}`}
+              className={`relative aspect-[4/3] overflow-hidden rounded-xl border transition duration-200 ${
+                active === index ? "border-red-500 ring-2 ring-red-200" : "border-slate-200 hover:border-slate-400"
               }`}
             >
               <Image src={media} alt={`${title} view ${index + 1}`} fill sizes="25vw" className="object-cover" />

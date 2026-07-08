@@ -36,6 +36,11 @@ export function AppointmentsBoard({ appointments }: { appointments: Appointment[
   return (
     <div className="space-y-4">
       {message ? <p className="text-sm font-semibold text-slate-700">{message}</p> : null}
+      <section className="grid gap-3 md:grid-cols-3">
+        <InfoCard title="Requested" body="A shopper asked for a visit and needs confirmation." />
+        <InfoCard title="Confirmed" body="The visit is on the calendar and should be prepared for." />
+        <InfoCard title="Completed or cancelled" body="Close the loop so reporting and follow-up stay accurate." />
+      </section>
       <div className="grid gap-4 lg:grid-cols-2">
         {appointments.map((appointment) => {
           const busy = busyId === appointment.id || isPending;
@@ -47,7 +52,7 @@ export function AppointmentsBoard({ appointments }: { appointments: Appointment[
                   <h2 className="mt-1 text-xl font-black">{appointment.name}</h2>
                   <p className="mt-1 text-sm text-slate-600">{formatDate(appointment.appointmentAt)}</p>
                 </div>
-                <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold capitalize">{appointment.status}</span>
+                <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold capitalize">{formatStatusLabel(appointment.status)}</span>
               </div>
               <div className="mt-4 flex flex-wrap gap-2 text-xs font-bold text-neutral-600">
                 <a href={`tel:${appointment.phone}`} className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 transition hover:bg-slate-100">
@@ -73,7 +78,7 @@ export function AppointmentsBoard({ appointments }: { appointments: Appointment[
                 >
                   {statuses.map((status) => (
                     <option key={status} value={status}>
-                      {status}
+                      {formatStatusLabel(status)}
                     </option>
                   ))}
                 </select>
@@ -90,4 +95,28 @@ function formatDate(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Schedule pending";
   return date.toLocaleString();
+}
+
+function formatStatusLabel(status: string) {
+  switch (status) {
+    case "requested":
+      return "Requested";
+    case "confirmed":
+      return "Confirmed";
+    case "completed":
+      return "Completed";
+    case "cancelled":
+      return "Cancelled";
+    default:
+      return status;
+  }
+}
+
+function InfoCard({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+      <p className="text-sm font-black text-slate-900">{title}</p>
+      <p className="mt-1 text-sm leading-6 text-slate-600">{body}</p>
+    </div>
+  );
 }

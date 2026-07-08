@@ -65,12 +65,12 @@ export function ChatPanel({ vehicleSlug }: { vehicleSlug?: string }) {
   }
 
   return (
-    <section className="rounded-[30px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,242,233,0.94))] p-6 shadow-[0_30px_80px_rgba(148,163,184,0.18)]">
-      <div className="flex items-center gap-2 text-amber-700">
+    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex items-center gap-2 text-red-600">
         <Sparkles className="h-4 w-4" />
-        <p className="text-sm font-semibold uppercase tracking-[0.18em]">Sales chat</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.16em]">Sales chat</p>
       </div>
-      <h2 className="mt-2 text-2xl font-black text-slate-950">Chat with a sales expert</h2>
+      <h2 className="mt-2 font-heading text-2xl font-bold tracking-tight text-slate-900">Chat with a sales expert</h2>
       <p className="mt-2 text-sm leading-6 text-slate-600">
         Ask naturally, the way you would text a salesperson. I can help with budget, mpg, trade-ins, financing questions, or the best fit for your commute.
       </p>
@@ -80,37 +80,42 @@ export function ChatPanel({ vehicleSlug }: { vehicleSlug?: string }) {
             key={prompt}
             type="button"
             onClick={() => setInput(prompt)}
-            className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-900 transition hover:bg-amber-100"
+            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-700"
           >
             {prompt}
           </button>
         ))}
       </div>
-      <div className="mt-5 max-h-[420px] space-y-3 overflow-auto rounded-[24px] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.7),rgba(241,245,249,0.8))] p-4">
+      <div className="mt-5 max-h-[420px] space-y-3 overflow-auto rounded-xl border border-slate-200 bg-slate-50 p-4">
         {messages.map((message, index) => (
           <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
-              className={`max-w-[85%] rounded-[22px] px-4 py-3 text-sm leading-6 ${
-                message.role === "user" ? "bg-slate-950 text-white shadow-lg shadow-slate-950/10" : "bg-white text-slate-700 shadow-sm"
+              className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-6 ${
+                message.role === "user" ? "bg-slate-900 text-white" : "border border-slate-200 bg-white text-slate-700 shadow-sm"
               }`}
             >
               {message.content}
             </div>
           </div>
         ))}
+        {loading ? (
+          <div className="flex justify-start">
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-400 shadow-sm">Typing…</div>
+          </div>
+        ) : null}
       </div>
       <div className="mt-4 flex gap-3">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && !loading && sendMessage()}
-          className="min-h-12 flex-1 rounded-2xl border border-white/80 bg-white/90 px-4 text-sm outline-none transition focus:border-amber-300 focus:ring-2 focus:ring-amber-200/70"
+          className="min-h-12 flex-1 rounded-xl border border-slate-300 bg-white px-4 text-sm outline-none transition focus:border-red-400 focus:ring-2 focus:ring-red-100"
           placeholder="Ask about a car, trade-in, or financing..."
         />
         <button
           onClick={sendMessage}
           disabled={loading}
-          className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
+          className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
         >
           <SendHorizontal className="h-4 w-4" />
           Send

@@ -60,22 +60,22 @@ export const trustSignals = [
   {
     icon: BadgeCheck,
     title: "Experienced dealer",
-    description: "Built around the real Crown Vic story: veteran pre-owned specialists with a long-term customer base.",
+    description: "Veteran pre-owned specialists serving Bay Area drivers and a loyal customer base for over two decades.",
   },
   {
     icon: Leaf,
     title: "Hybrid and EV focus",
-    description: "The new site emphasizes fuel efficiency, commuter value, and electrified inventory first.",
+    description: "Fuel efficiency, commuter value, and electrified vehicles come first on our lot — not as an afterthought.",
   },
   {
     icon: Shield,
     title: "Transparent shopping",
-    description: "Dedicated pages for inventory, finance, trade-in, and contact keep the journey straightforward.",
+    description: "Clear pricing, mileage, and vehicle history on every listing, so you know what you're looking at before you visit.",
   },
   {
     icon: CircleDollarSign,
-    title: "Lead-friendly design",
-    description: "Every page gives buyers a next step, whether they are comparing price, mileage, or monthly budget.",
+    title: "Help at every step",
+    description: "Financing, trade-in valuation, and test drives are one click away whenever you're ready to move forward.",
   },
 ];
 

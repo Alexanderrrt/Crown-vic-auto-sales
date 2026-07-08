@@ -1,4 +1,5 @@
 import { MessageCircle, UserRoundCheck } from "lucide-react";
+import { AdminPageIntro } from "@/components/admin-page-intro";
 import { ChatInbox } from "@/components/chat-inbox";
 import { getAdminOverview } from "@/lib/admin-data";
 
@@ -8,7 +9,14 @@ export default async function AdminChatPage() {
   const overview = await getAdminOverview();
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
+    <div className="space-y-6">
+      <AdminPageIntro
+        eyebrow="AI handoff"
+        title="Chat inbox"
+        body="Use this page when the assistant needs a human. Review buyer intent, open the matching lead or vehicle, then move the shopper toward contact or an appointment."
+      />
+
+      <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
       <section className="rounded-lg border border-white/70 bg-[linear-gradient(180deg,#ffffff,#f7f9fb)] p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
         <div className="flex items-center gap-2 text-amber-700">
           <MessageCircle className="h-5 w-5" />
@@ -42,6 +50,7 @@ export default async function AdminChatPage() {
       <section className="xl:col-span-2">
         <ChatInbox sessions={overview.chatInbox} />
       </section>
+      </div>
     </div>
   );
 }

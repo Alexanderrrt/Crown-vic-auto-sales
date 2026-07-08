@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Open_Sans, Poppins } from "next/font/google";
 import { SiteShell } from "@/components/site-shell";
 import "./globals.css";
 
-const inter = Inter({
+const openSans = Open_Sans({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-opensans",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-poppins",
 });
 
 const mono = JetBrains_Mono({
@@ -21,7 +27,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const document = (
-    <html lang="en" className={`${inter.variable} ${mono.variable}`}>
+    <html lang="en" className={`${openSans.variable} ${poppins.variable} ${mono.variable}`}>
       <body>
         <SiteShell>{children}</SiteShell>
       </body>

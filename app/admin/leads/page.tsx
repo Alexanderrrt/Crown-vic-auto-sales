@@ -1,3 +1,4 @@
+import { AdminPageIntro } from "@/components/admin-page-intro";
 import { CrmBoard } from "@/components/crm-board";
 import { getAdminOverview } from "@/lib/admin-data";
 
@@ -8,11 +9,11 @@ export default async function AdminLeadsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-700">Lead CRM</p>
-        <h1 className="mt-2 text-3xl font-black">Pipeline</h1>
-        <p className="mt-2 text-sm text-slate-600">Move buyers through the pipeline, log notes, and keep every follow-up traceable.</p>
-      </div>
+      <AdminPageIntro
+        eyebrow="Lead CRM"
+        title="Pipeline"
+        body="Use this page for shopper follow-up. Each column is a stage. Open a lead when you need the full workspace with notes, tasks, chats, and appointments."
+      />
       <CrmBoard leads={leads} staffProfiles={staffProfiles} />
     </div>
   );

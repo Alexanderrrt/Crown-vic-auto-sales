@@ -27,18 +27,18 @@ export function SavedVehiclesPanel({ vehicles }: { vehicles: Vehicle[] }) {
   if (!saved.length && !compared.length) return null;
 
   return (
-    <section className="mt-8 rounded-[30px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,242,233,0.95))] p-5 shadow-[0_22px_60px_rgba(148,163,184,0.16)]">
-      <div className="grid gap-5 lg:grid-cols-2">
+    <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="grid gap-6 lg:grid-cols-2">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-700">Saved vehicles</p>
-          <h2 className="mt-2 text-2xl font-black text-slate-950">Your shortlist</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-red-600">Saved vehicles</p>
+          <h2 className="mt-2 font-heading text-xl font-bold text-slate-900">Your shortlist</h2>
           <div className="mt-4 flex flex-wrap gap-2">
             {saved.length ? saved.map((vehicle) => <Pill key={vehicle.id} href={`/inventory/${vehicle.slug}`} label={vehicle.title} />) : <Empty text="Save vehicles while you browse." />}
           </div>
         </div>
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Compare queue</p>
-          <h2 className="mt-2 text-2xl font-black text-slate-950">Vehicles to compare</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Compare queue</p>
+          <h2 className="mt-2 font-heading text-xl font-bold text-slate-900">Vehicles to compare</h2>
           <div className="mt-4 flex flex-wrap gap-2">
             {compared.length
               ? compared.map((vehicle) => <Pill key={vehicle.id} href={`/inventory/${vehicle.slug}`} label={`${vehicle.title} - ${vehicle.price}`} />)
@@ -52,7 +52,10 @@ export function SavedVehiclesPanel({ vehicles }: { vehicles: Vehicle[] }) {
 
 function Pill({ href, label }: { href: string; label: string }) {
   return (
-    <Link href={href} className="rounded-full border border-white/80 bg-white/85 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-white">
+    <Link
+      href={href}
+      className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-700"
+    >
       {label}
     </Link>
   );

@@ -1,4 +1,5 @@
 import { BarChart3, CalendarClock, MousePointerClick, Percent, PhoneCall, Star } from "lucide-react";
+import { AdminPageIntro } from "@/components/admin-page-intro";
 import { getAdminOverview } from "@/lib/admin-data";
 
 export const dynamic = "force-dynamic";
@@ -8,10 +9,11 @@ export default async function AdminAnalyticsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-700">Analytics</p>
-        <h1 className="mt-2 text-3xl font-black">Lead generation health</h1>
-      </div>
+      <AdminPageIntro
+        eyebrow="Analytics"
+        title="What is working"
+        body="Use this page to spot which vehicles, forms, and conversations are creating the most buyer action so the team knows where to focus."
+      />
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Metric icon={<MousePointerClick className="h-5 w-5" />} label="Vehicle views" value={String(analytics.vehicleViews)} />

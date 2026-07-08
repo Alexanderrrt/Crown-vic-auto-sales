@@ -40,8 +40,8 @@ export function InventoryExplorer({ vehicles }: { vehicles: Vehicle[] }) {
 
   return (
     <section className="mt-8">
-      <div className="grid gap-3 rounded-[30px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(249,241,228,0.96))] p-4 shadow-[0_24px_70px_rgba(148,163,184,0.18)] lg:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
-        <label className="flex h-12 items-center gap-2 rounded-2xl border border-white/80 bg-white/90 px-4">
+      <div className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 lg:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
+        <label className="flex h-12 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 transition focus-within:border-red-400 focus-within:ring-2 focus-within:ring-red-100">
           <Search className="h-4 w-4 text-slate-500" />
           <input
             value={query}
@@ -57,15 +57,17 @@ export function InventoryExplorer({ vehicles }: { vehicles: Vehicle[] }) {
       </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-600">
-        <p>{filteredVehicles.length} vehicles match your search</p>
-        <p className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 font-semibold text-amber-800">Updated from Supabase when configured</p>
+        <p>
+          <span className="font-semibold text-slate-900">{filteredVehicles.length}</span> vehicles match your search
+        </p>
+        <p className="rounded-full border border-slate-200 bg-white px-3 py-1 font-medium text-slate-600">Inventory updated daily</p>
       </div>
 
       {filteredVehicles.length ? (
         <InventoryGrid vehicles={filteredVehicles} />
       ) : (
-        <div className="mt-8 rounded-[30px] border border-dashed border-amber-300 bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(255,247,235,0.92))] p-10 text-center">
-          <p className="text-lg font-black text-slate-950">No vehicles matched those filters.</p>
+        <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+          <p className="font-heading text-lg font-bold text-slate-900">No vehicles matched those filters.</p>
           <p className="mt-2 text-sm text-slate-600">Try widening the budget or changing the body style.</p>
         </div>
       )}
@@ -89,10 +91,10 @@ function Select({
   format?: (value: string) => string;
 }) {
   return (
-    <label className="flex h-12 items-center gap-2 rounded-2xl border border-white/80 bg-white/90 px-4">
+    <label className="flex h-12 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 transition focus-within:border-red-400 focus-within:ring-2 focus-within:ring-red-100">
       <span className="text-slate-500">{icon}</span>
       <span className="sr-only">{label}</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)} className="w-full bg-transparent text-sm text-slate-900 outline-none">
+      <select value={value} onChange={(event) => onChange(event.target.value)} className="w-full cursor-pointer bg-transparent text-sm text-slate-900 outline-none">
         {options.map((option) => (
           <option key={option} value={option}>
             {format(option)}

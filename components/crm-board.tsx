@@ -39,16 +39,25 @@ export function CrmBoard({ leads, staffProfiles }: { leads: Lead[]; staffProfile
   return (
     <div className="space-y-4">
       {message ? <p className="text-sm font-semibold text-slate-700">{message}</p> : null}
+      <section className="grid gap-3 md:grid-cols-3">
+        <QuickHelpCard title="New" body="Fresh shoppers who need a first reply or assignment." />
+        <QuickHelpCard title="Appointment" body="People close to visiting or already scheduled." />
+        <QuickHelpCard title="Won or lost" body="Closed outcomes so the pipeline stays clean." />
+      </section>
       <section className="grid gap-4 xl:grid-cols-5">
         {stages.map((stage) => {
           const stageLeads = leads.filter((lead) => lead.status === stage);
           return (
             <div key={stage} className="rounded-lg border border-white/70 bg-[linear-gradient(180deg,#ffffff,#f7f9fb)] p-4 shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
               <div className="flex items-center justify-between">
-                <h2 className="font-black capitalize">{stage}</h2>
+                <div>
+                  <h2 className="font-black capitalize">{stage}</h2>
+                  <p className="mt-1 text-xs text-slate-500">{describeStage(stage)}</p>
+                </div>
                 <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-bold">{stageLeads.length}</span>
               </div>
               <div className="mt-4 space-y-3">
+                {!stageLeads.length ? <EmptyLane text={emptyStageMessage(stage)} /> : null}
                 {stageLeads.map((lead) => {
                   const busy = busyLeadId === lead.id || isPending;
                   return (
@@ -198,4 +207,51 @@ function formatTimelineDate(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Recently";
   return date.toLocaleString();
+}
+
+function describeStage(stage: (typeof stages)[number]) {
+  switch (stage) {
+    case "new":
+      return "Needs a first touch";
+    case "contacted":
+      return "Conversation started";
+    case "appointment":
+      return "Working toward a visit";
+    case "won":
+      return "Deal moved forward";
+    case "lost":
+      return "Closed without sale";
+    default:
+      return "";
+  }
+}
+
+function emptyStageMessage(stage: (typeof stages)[number]) {
+  switch (stage) {
+    case "new":
+      return "No fresh leads waiting right now.";
+    case "contacted":
+      return "No active follow-ups in this stage.";
+    case "appointment":
+      return "Nobody is parked in appointment stage right now.";
+    case "won":
+      return "Closed wins will appear here.";
+    case "lost":
+      return "Closed lost leads will appear here.";
+    default:
+      return "No leads here yet.";
+  }
+}
+
+function QuickHelpCard({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+      <p className="text-sm font-black text-slate-900">{title}</p>
+      <p className="mt-1 text-sm leading-6 text-slate-600">{body}</p>
+    </div>
+  );
+}
+
+function EmptyLane({ text }: { text: string }) {
+  return <p className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-500">{text}</p>;
 }

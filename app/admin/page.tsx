@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, CalendarClock, CarFront, ListChecks, MessageCircle, TrendingUp, Users } from "lucide-react";
+import { AdminPageIntro } from "@/components/admin-page-intro";
 import { getAdminOverview } from "@/lib/admin-data";
 
 export const dynamic = "force-dynamic";
@@ -9,12 +10,25 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
+      <AdminPageIntro
+        eyebrow="Admin home"
+        title="Start here"
+        body="This page is your quick daily overview. Use it to see who needs follow-up, which appointments are coming up, what the AI is handing over, and where the team should focus next."
+      />
+
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Metric icon={<CarFront className="h-5 w-5" />} label="Inventory" value={String(overview.inventory.length)} />
         <Metric icon={<Users className="h-5 w-5" />} label="Open leads" value={String(overview.leads.length)} />
         <Metric icon={<CalendarClock className="h-5 w-5" />} label="Appointments" value={String(overview.appointments.length)} />
         <Metric icon={<MessageCircle className="h-5 w-5" />} label="Chat sessions" value={String(overview.chatSessions)} />
         <Metric icon={<ListChecks className="h-5 w-5" />} label="Open tasks" value={String(overview.openTasks)} />
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-4">
+        <ActionCard title="Work leads" body="Call, text, assign, and move buyers through the pipeline." href="/admin/leads" />
+        <ActionCard title="Confirm visits" body="See who's coming in and update appointment status." href="/admin/appointments" />
+        <ActionCard title="Review AI chats" body="Take over high-intent conversations and create follow-up." href="/admin/chat" />
+        <ActionCard title="Manage inventory" body="Update listings, pricing, media, and featured placement." href="/admin/inventory" />
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
@@ -123,6 +137,16 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+function ActionCard({ title, body, href }: { title: string; body: string; href: string }) {
+  return (
+    <Link href={href} className="rounded-lg border border-white/70 bg-[linear-gradient(180deg,#ffffff,#f7f9fb)] p-5 shadow-[0_14px_34px_rgba(15,23,42,0.06)] transition hover:bg-white">
+      <p className="font-black text-slate-950">{title}</p>
+      <p className="mt-2 text-sm leading-6 text-slate-600">{body}</p>
+      <p className="mt-4 text-sm font-bold text-amber-700">Open</p>
+    </Link>
   );
 }
 

@@ -1,4 +1,5 @@
 import { ActivityFeed } from "@/components/activity-feed";
+import { AdminPageIntro } from "@/components/admin-page-intro";
 import { getActivityFeed } from "@/lib/admin-data";
 
 export const dynamic = "force-dynamic";
@@ -8,13 +9,11 @@ export default async function AdminActivityPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-700">Customer activity</p>
-        <h1 className="mt-2 text-3xl font-black">Unified timeline</h1>
-        <p className="mt-2 max-w-3xl text-sm text-slate-600">
-          Review the full customer journey across leads, appointments, and AI conversations in chronological order.
-        </p>
-      </div>
+      <AdminPageIntro
+        eyebrow="Customer activity"
+        title="Everything that happened"
+        body="This is the running timeline for the store. If you want to understand what a shopper did before reaching out, start here."
+      />
       <section className="grid gap-4 md:grid-cols-4">
         <Metric label="All activity" value={String(items.length)} />
         <Metric label="Lead events" value={String(items.filter((item) => item.type === "lead_event").length)} />
