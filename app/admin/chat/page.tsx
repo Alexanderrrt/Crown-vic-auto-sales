@@ -1,4 +1,5 @@
 import { MessageCircle, UserRoundCheck } from "lucide-react";
+import { ChatInbox } from "@/components/chat-inbox";
 import { getAdminOverview } from "@/lib/admin-data";
 
 export const dynamic = "force-dynamic";
@@ -37,6 +38,9 @@ export default async function AdminChatPage() {
             </div>
           ))}
         </div>
+      </section>
+      <section className="xl:col-span-2">
+        <ChatInbox sessions={overview.chatInbox} />
       </section>
     </div>
   );

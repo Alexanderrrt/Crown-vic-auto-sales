@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { BarChart3, CarFront, Inbox, LayoutDashboard, MessagesSquare } from "lucide-react";
+import { Activity, BarChart3, CalendarClock, CarFront, Inbox, LayoutDashboard, MessagesSquare } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/inventory", label: "Inventory", icon: CarFront },
   { href: "/admin/leads", label: "Leads", icon: Inbox },
+  { href: "/admin/appointments", label: "Appointments", icon: CalendarClock },
   { href: "/admin/chat", label: "Chat", icon: MessagesSquare },
+  { href: "/admin/activity", label: "Activity", icon: Activity },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
